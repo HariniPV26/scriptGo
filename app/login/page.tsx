@@ -3,7 +3,8 @@
 import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/utils/supabase/client'
-import { Loader2, Sparkles } from 'lucide-react'
+import { Loader2, Sparkles, CheckCircle2, Star, ArrowRight } from 'lucide-react'
+import Link from 'next/link'
 
 function LoginContent() {
     const router = useRouter()
@@ -43,131 +44,200 @@ function LoginContent() {
                 const { error } = await supabase.auth.signUp({
                     email,
                     password,
-                    // options: { emailRedirectTo: `${location.origin}/auth/callback` } // optional
                 })
                 if (error) {
                     setError(error.message)
                 } else {
-                    // For auto-confirm or confirm-email flow
                     router.push('/dashboard')
                     router.refresh()
                 }
             }
         } catch (e) {
             console.error("Login Error:", e)
-            setError('An unexpected error occurred: ' + (e instanceof Error ? e.message : String(e)))
+            setError('An unexpected error occurred. Please try again.')
         } finally {
             setIsLoading(false)
         }
     }
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center p-4 relative overflow-hidden">
-            {/* Background Ambience */}
-            <div className="absolute top-0 left-1/4 w-96 h-96 bg-indigo-600/20 rounded-full blur-3xl -z-10 animate-pulse" style={{ animationDuration: '4s' }}></div>
-            <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-600/20 rounded-full blur-3xl -z-10 animate-pulse" style={{ animationDuration: '7s' }}></div>
+        <div className="min-h-screen flex bg-background font-sans">
 
-            <div className="w-full max-w-md space-y-8 z-10">
-                <div className="flex flex-col items-center text-center">
-                    <div className="relative mb-6 group">
-                        <div className="absolute -inset-1 bg-gradient-to-r from-primary to-purple-600 rounded-2xl blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
-                        <div className="relative h-16 w-16 bg-background rounded-xl flex items-center justify-center border border-border">
-                            <Sparkles className="h-8 w-8 text-primary" />
-                        </div>
-                    </div>
-                    <h2 className="text-4xl font-bold tracking-tight text-foreground bg-clip-text text-transparent bg-gradient-to-br from-foreground to-muted-foreground">
-                        {isLogin ? 'Welcome back' : 'Join ScriptGo'}
-                    </h2>
-                    <p className="mt-3 text-muted-foreground text-lg">
-                        {isLogin
-                            ? 'Your creative AI partner awaits.'
-                            : 'Create viral scripts in seconds.'}
-                    </p>
+            {/* LEFT SIDE - VISUAL & TESTIMONIAL (Hidden on mobile) */}
+            <div className="hidden lg:flex lg:w-1/2 relative bg-muted text-white overflow-hidden flex-col justify-between p-12">
+                <div className="absolute inset-0 z-0">
+                    <div className="absolute inset-0 bg-zinc-900"></div>
+                    {/* Mesh Gradient Overlay */}
+                    <div className="absolute top-[-20%] left-[-20%] w-[80%] h-[80%] rounded-full bg-primary/20 blur-[120px] animate-pulse" style={{ animationDuration: '8s' }}></div>
+                    <div className="absolute bottom-[-20%] right-[-20%] w-[80%] h-[80%] rounded-full bg-blue-600/10 blur-[120px] animate-pulse" style={{ animationDuration: '10s' }}></div>
+
+                    {/* Grid Pattern */}
+                    <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20"></div>
                 </div>
 
-                <div className="w-full bg-card/50 backdrop-blur-xl border border-border rounded-3xl shadow-2xl overflow-hidden">
-                    {/* Fancy Tabs */}
-                    <div className="flex p-2 gap-2 bg-muted/20">
+                <div className="relative z-10">
+                    <div className="flex items-center gap-2 mb-12">
+                        <div className="h-8 w-8 bg-gradient-to-br from-primary to-purple-600 rounded-lg flex items-center justify-center">
+                            <Sparkles className="h-4 w-4 text-white" />
+                        </div>
+                        <span className="font-outfit font-bold text-xl tracking-tight">ScriptGo</span>
+                    </div>
+                </div>
+
+                <div className="relative z-10 w-full max-w-md">
+                    <div className="mb-8 space-y-6">
+                        <div className="space-y-2">
+                            {[1, 2, 3].map(i => (
+                                <div key={i} className="flex items-center gap-3 p-3 rounded-lg bg-white/5 border border-white/5 backdrop-blur-sm animate-in slide-in-from-bottom-4" style={{ animationDelay: `${i * 100}ms` }}>
+                                    <CheckCircle2 className="h-5 w-5 text-primary" />
+                                    <span className="text-sm font-medium text-gray-200">
+                                        {i === 1 ? 'Generate viral hooks in seconds' : i === 2 ? 'Seamless multi-platform adaptation' : 'Export directly to your calendar'}
+                                    </span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="p-6 rounded-2xl bg-white border border-white/10 shadow-xl">
+                        <div className="flex gap-1 mb-4">
+                            {[1, 2, 3, 4, 5].map(i => (
+                                <Star key={i} className="h-4 w-4 fill-yellow-500 text-yellow-500" />
+                            ))}
+                        </div>
+                        <blockquote className="text-lg font-medium leading-relaxed mb-4 text-gray-900">
+                            "ScriptGo has completely transformed my content workflow. I used to spend hours writing Scripts, now I generate a week's worth in minutes."
+                        </blockquote>
+                        <div className="flex items-center gap-3">
+                            <div className="h-10 w-10 rounded-full bg-gradient-to-tr from-blue-400 to-primary"></div>
+                            <div>
+                                <div className="font-bold text-gray-900">Sarah Jenkins</div>
+                                <div className="text-sm text-gray-500">Content Creator @ TechFlow</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="relative z-10 text-xs text-gray-500">
+                    © 2026 ScriptGo Inc. All rights reserved.
+                </div>
+            </div>
+
+            {/* RIGHT SIDE - FORM */}
+            <div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12 relative">
+                <div className="w-full max-w-[400px] space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+
+                    {/* Mobile Logo (Visible only on mobile) */}
+                    <div className="lg:hidden flex justify-center mb-8">
+                        <div className="h-10 w-10 bg-primary/10 rounded-xl flex items-center justify-center">
+                            <Sparkles className="h-5 w-5 text-primary" />
+                        </div>
+                    </div>
+
+                    <div className="text-center lg:text-left space-y-2">
+                        <h2 className="font-outfit text-3xl font-bold tracking-tight">
+                            {isLogin ? 'Welcome back' : 'Create an account'}
+                        </h2>
+                        <p className="text-muted-foreground">
+                            {isLogin
+                                ? 'Enter your details to access your workspace.'
+                                : 'Start your 14-day free trial. No credit card required.'}
+                        </p>
+                    </div>
+
+                    <div className="flex p-1 bg-muted/50 rounded-xl mb-6">
                         <button
                             type="button"
                             onClick={() => setIsLogin(true)}
-                            className={`flex-1 py-3 px-4 text-sm font-semibold rounded-xl transition-all duration-300 ${isLogin
-                                ? 'bg-background text-foreground shadow-lg ring-1 ring-border'
-                                : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
-                                }`}
+                            className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all ${isLogin
+                                ? 'bg-background shadow-sm text-foreground'
+                                : 'text-muted-foreground hover:text-foreground'}`}
                         >
-                            Login
+                            Log In
                         </button>
                         <button
                             type="button"
                             onClick={() => setIsLogin(false)}
-                            className={`flex-1 py-3 px-4 text-sm font-semibold rounded-xl transition-all duration-300 ${!isLogin
-                                ? 'bg-background text-foreground shadow-lg ring-1 ring-border'
-                                : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
-                                }`}
+                            className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all ${!isLogin
+                                ? 'bg-background shadow-sm text-foreground'
+                                : 'text-muted-foreground hover:text-foreground'}`}
                         >
                             Sign Up
                         </button>
                     </div>
 
-                    <div className="p-8 pt-6">
-                        <form action={handleSubmit} className="space-y-5">
-                            {error && (
-                                <div className="p-4 text-sm font-medium text-red-600 dark:text-red-200 bg-red-100 dark:bg-red-900/20 border border-red-200 dark:border-red-500/20 rounded-xl animate-in fade-in slide-in-from-top-2">
-                                    {error}
-                                </div>
-                            )}
-                            <div className="space-y-1.5">
-                                <label
-                                    htmlFor="email"
-                                    className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground ml-1"
-                                >
-                                    Email
-                                </label>
-                                <input
-                                    id="email"
-                                    name="email"
-                                    type="email"
-                                    autoComplete="email"
-                                    required
-                                    className="w-full px-4 py-3 bg-background/50 border border-input rounded-xl text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all placeholder:text-muted-foreground"
-                                    placeholder="creator@scriptgo.com"
-                                />
-                            </div>
+                    <form onSubmit={async (e) => {
+                        e.preventDefault()
+                        const formData = new FormData(e.currentTarget)
+                        await handleSubmit(formData)
+                    }} className="space-y-5">
 
-                            <div className="space-y-1.5">
-                                <label
-                                    htmlFor="password"
-                                    className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground ml-1"
-                                >
+                        {error && (
+                            <div className="p-3 text-sm font-medium text-red-500 bg-red-500/10 border border-red-500/20 rounded-lg animate-in fade-in">
+                                {error}
+                            </div>
+                        )}
+
+                        <div className="space-y-2">
+                            <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" htmlFor="email">
+                                Email
+                            </label>
+                            <input
+                                id="email"
+                                name="email"
+                                type="email"
+                                required
+                                className="flex h-11 w-full rounded-lg border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                                placeholder="name@example.com"
+                            />
+                        </div>
+
+                        <div className="space-y-2">
+                            <div className="flex items-center justify-between">
+                                <label className="text-sm font-medium leading-none icon" htmlFor="password">
                                     Password
                                 </label>
-                                <input
-                                    id="password"
-                                    name="password"
-                                    type="password"
-                                    autoComplete="current-password"
-                                    required
-                                    className="w-full px-4 py-3 bg-background/50 border border-input rounded-xl text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all placeholder:text-muted-foreground"
-                                    placeholder="••••••••"
-                                />
+                                {isLogin && (
+                                    <Link href="#" className="text-xs font-medium text-primary hover:underline tab-index-[-1]">
+                                        Forgot password?
+                                    </Link>
+                                )}
                             </div>
+                            <input
+                                id="password"
+                                name="password"
+                                type="password"
+                                required
+                                className="flex h-11 w-full rounded-lg border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                                placeholder="••••••••"
+                            />
+                        </div>
 
-                            <div className="pt-2">
-                                <button
-                                    type="submit"
-                                    disabled={isLoading}
-                                    className="group w-full flex items-center justify-center py-3.5 px-4 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold rounded-xl transition-all shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary focus:ring-offset-background disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02] active:scale-[0.98]"
-                                >
-                                    {isLoading ? (
-                                        <Loader2 className="h-5 w-5 animate-spin" />
-                                    ) : (
-                                        isLogin ? 'Sign in to Dashboard' : 'Create Free Account'
-                                    )}
-                                </button>
-                            </div>
-                        </form>
-                    </div>
+                        <button
+                            type="submit"
+                            disabled={isLoading}
+                            className="inline-flex items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-11 w-full shadow-lg shadow-primary/20"
+                        >
+                            {isLoading ? (
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            ) : (
+                                <>
+                                    {isLogin ? 'Sign In' : 'Get Started'} <ArrowRight className="ml-2 h-4 w-4" />
+                                </>
+                            )}
+                        </button>
+                    </form>
+
+                    <p className="px-8 text-center text-sm text-muted-foreground">
+                        By clicking continue, you agree to our{" "}
+                        <Link href="#" className="underline underline-offset-4 hover:text-primary">
+                            Terms of Service
+                        </Link>{" "}
+                        and{" "}
+                        <Link href="#" className="underline underline-offset-4 hover:text-primary">
+                            Privacy Policy
+                        </Link>
+                        .
+                    </p>
                 </div>
             </div>
         </div>
@@ -176,7 +246,7 @@ function LoginContent() {
 
 export default function LoginPage() {
     return (
-        <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><Loader2 className="h-8 w-8 animate-spin" /></div>}>
+        <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-background"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>}>
             <LoginContent />
         </Suspense>
     )

@@ -1,100 +1,106 @@
 'use server'
 
 import OpenAI from 'openai'
-import { createClient } from '@/utils/supabase/server'
-import { redirect } from 'next/navigation'
-import { revalidatePath } from 'next/cache'
 
 const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
+  apiKey: process.env.OPENAI_API_KEY,
 })
 
-export async function generateScript(formData: FormData) {
-    const topic = formData.get('topic') as string
-    const tone = formData.get('tone') as string
-    const platform = formData.get('platform') as string
+export async function generateScript(topic: string, tone: string, platform: string, language: string = 'English', framework: string = 'None') {
+  if (!process.env.OPENAI_API_KEY) {
+    throw new Error('OpenAI API Key is missing')
+  }
 
-    if (!process.env.OPENAI_API_KEY) {
-        // Mock response if no key (for testing without billing)
-        console.warn("No OpenAI API Key found. Returning mock data.")
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        return {
-            content: {
-                visual: [
-                    "Opening shot: Excited host facing camera",
-                    "Cut to: B-roll of the topic subject",
-                    "Text overlay: 'Top Tips'",
-                    "Host holds up one finger",
-                    "Graphic: Summary of points"
-                ],
-                audio: [
-                    "Hey guys! Welcome back to the channel.",
-                    `Today we're talking about ${topic}.`,
-                    "It's easier than you think.",
-                    "Tip number one: Start small.",
-                    "And that's how you do it!"
-                ]
-            }
-        }
-    }
+  let specificInstructions = ''
+  let frameworkInstruction = ''
 
-    const prompt = `You are a professional scriptwriter for ${platform}.
-  Topic: ${topic}
-  Tone: ${tone}
-  
-  Please write a script and format it as a JSON object with two arrays: 'visual' (what happens on screen) and 'audio' (what is said).
-  Ensure both arrays have the same length so they can be displayed side-by-side.
-  Make it engaging and suitable for the platform.`
+  if (framework === 'AIDA') {
+    frameworkInstruction = `
+      MARKETING FRAMEWORK: Use the AIDA model (Attention, Interest, Desire, Action).
+      - Attention: Grasp the reader's attention with a powerful opening.
+      - Interest: Provide interesting facts or insights to keep them engaged.
+      - Desire: Make them want the product/service or agree with your point.
+      - Action: Direct the reader to take a clear next step.
+      `
+  } else if (framework === 'PAS') {
+    frameworkInstruction = `
+      MARKETING FRAMEWORK: Use the PAS model (Problem, Agitation, Solution).
+      - Problem: Clearly identify a specific pain point or problem.
+      - Agitation: Stir up the emotions around that problem, explaining the consequences of not solving it.
+      - Solution: Present your topic/service/product as the definitive answer.
+      `
+  }
 
-    try {
-        const completion = await openai.chat.completions.create({
-            messages: [{ role: 'system', content: 'You are a helpful assistant that outputs JSON.' }, { role: 'user', content: prompt }],
-            model: 'gpt-3.5-turbo',
-            response_format: { type: 'json_object' },
-        })
+  if (platform === 'LinkedIn') {
+    specificInstructions = `
+      CONTEXT: You are a LinkedIn Ghostwriter.
+      GOAL: Write a high-engagement text post (NO video scripts, NO audio cues) in ${language}.
+      
+      STRUCTURE:
+      1. HOOK: A punchy, one-line opening to grab attention.
+      2. RE-HOOK: Briefly expand on the problem or situation.
+      3. BODY: Deliver value, a story, or a list of insights. Use short paragraphs and line breaks for readability.
+      4. TAKEAWAY/CTA: Summarize or ask a question to drive comments.
+      5. HASHTAGS: 3-5 relevant hashtags.
+      
+      ${frameworkInstruction}
+      
+      FORMAT: Plain text, ready to copy-paste into LinkedIn.
+      `
+  } else if (platform === 'YouTube') {
+    specificInstructions = `
+      CONTEXT: You are a Professional YouTube Scriptwriter.
+      GOAL: Write a compelling video script for a long-form video in ${language}.
+      
+      STRUCTURE:
+      1. TITLE OPTIONS: 3 Clickbait title ideas.
+      2. INTRO (0:00): Catchy hook, what the viewer will learn.
+      3. BODY: Broken down into clear sections/points. Use [Visual Cue] brackets if describing screen action, but focus on the Spoken Audio.
+      4. OUTRO: Summary and Call to Action (Subscribe).
+      
+      ${frameworkInstruction}
+      
+      FORMAT: Script format with headers.
+      `
+  } else {
+    // TikTok, Instagram, Shorts
+    specificInstructions = `
+      CONTEXT: You are a Viral Short-Form Video Expert (TikTok/Reels).
+      GOAL: Write a fast-paced, 60-second video script in ${language}.
+      
+      STRUCTURE:
+      - HOOK (0-3s): Visual or Audio hook to stop scrolling.
+      - VALUE (3-50s): Fast tips or story.
+      - CTA (50-60s): "Follow for more" or similar.
+      
+      ${frameworkInstruction}
+      
+      FORMAT: Two-column style simplified into text:
+      [Visual]: description
+      [Audio]: spoken words
+      `
+  }
 
-        const content = JSON.parse(completion.choices[0].message.content || '{}')
-        // content should be { visual: [], audio: [] }
-        return { content }
-    } catch (error) {
-        console.error('OpenAI Error:', error)
-        return { error: 'Failed to generate script' }
-    }
-}
+  const prompt = `
+    TOPIC: ${topic}
+    TONE: ${tone}
+    LANGUAGE: ${language}
+    ${specificInstructions}
+    
+    Return ONLY the raw content. Do not wrap it in JSON or markdown code blocks unless necessary for formatting.
+    IMPORTANT: The entire script MUST be written in ${language}.
+  `
 
-export async function saveScript(id: string | null, title: string, platform: string, content: any) {
-    const supabase = await createClient()
-    const { data: { user } } = await supabase.auth.getUser()
+  try {
+    const response = await openai.chat.completions.create({
+      model: 'gpt-4o',
+      messages: [{ role: 'user', content: prompt }],
+    })
 
-    if (!user) {
-        return { error: 'Unauthorized' }
-    }
-
-    if (id) {
-        // Update
-        const { error } = await supabase
-            .from('scripts')
-            .update({ title, platform, content })
-            .eq('id', id)
-            .eq('user_id', user.id)
-
-        if (error) return { error: error.message }
-        revalidatePath(`/editor/${id}`)
-        return { success: true }
-    } else {
-        // Insert
-        const { data, error } = await supabase
-            .from('scripts')
-            .insert({
-                user_id: user.id,
-                title: title || 'Untitled Script',
-                platform,
-                content
-            })
-            .select()
-            .single()
-
-        if (error) return { error: error.message }
-        return { success: true, id: data.id }
-    }
+    const content = response.choices[0].message.content || 'No script generated.'
+    return { text: content }
+  } catch (error) {
+    console.error('OpenAI Error:', error)
+    return { text: 'Error generating script. Please try again.' }
+  }
 }

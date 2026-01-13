@@ -39,6 +39,10 @@ export async function updateSession(request: NextRequest) {
         return NextResponse.redirect(new URL('/login', request.url))
     }
 
+    if (request.nextUrl.pathname.startsWith('/calendar') && !user) {
+        return NextResponse.redirect(new URL('/login', request.url))
+    }
+
     if (request.nextUrl.pathname.startsWith('/editor') && !user) {
         return NextResponse.redirect(new URL('/login', request.url))
     }

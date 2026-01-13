@@ -3,7 +3,7 @@
 import { createClient } from '@/utils/supabase/client'
 import Header from '@/components/Header'
 import Link from 'next/link'
-import { Plus, FileText, Calendar, Loader2, Trash2, BarChart3, TrendingUp, Zap } from 'lucide-react'
+import { Plus, FileText, Calendar, Loader2, Trash2, BarChart3, TrendingUp, Zap, Sparkles } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
@@ -62,7 +62,7 @@ export default function DashboardPage() {
 
     if (loading) {
         return (
-            <div className="min-h-screen flex items-center justify-center">
+            <div className="min-h-screen flex items-center justify-center bg-background">
                 <Loader2 className="h-8 w-8 animate-spin text-primary" />
             </div>
         )
@@ -84,29 +84,29 @@ export default function DashboardPage() {
     }, {} as Record<string, number>)
 
     return (
-        <div className="min-h-screen flex flex-col bg-background">
+        <div className="min-h-screen flex flex-col bg-background selection:bg-primary/20">
             <Header />
 
-            <main className="flex-1 p-6 max-w-7xl mx-auto w-full">
+            <main className="flex-1 p-6 max-w-7xl mx-auto w-full animate-in fade-in duration-700">
                 {/* Header */}
                 <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 gap-4">
-                    <div>
-                        <h1 className="text-3xl font-bold mb-1">Your Workshop</h1>
-                        <p className="text-muted-foreground">Manage and create your scripts</p>
+                    <div className="space-y-1">
+                        <h1 className="font-outfit text-3xl font-bold tracking-tight">Your Workshop</h1>
+                        <p className="text-muted-foreground">Manage and create your viral content.</p>
                     </div>
                     <div className="flex items-center gap-3">
                         <Link
                             href="/calendar"
-                            className="inline-flex h-10 items-center justify-center gap-2 rounded-lg border border-border bg-background px-4 text-sm font-medium hover:bg-muted transition-colors"
+                            className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-border bg-background/50 hover:bg-muted/50 px-4 text-sm font-medium transition-all hover:scale-105"
                         >
                             <Calendar className="h-4 w-4" />
                             Calendar
                         </Link>
                         <Link
                             href="/editor"
-                            className="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
+                            className="group inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary to-purple-600 px-4 text-sm font-bold text-white shadow-lg shadow-primary/25 transition-all hover:shadow-primary/40 hover:scale-105"
                         >
-                            <Plus className="h-4 w-4" />
+                            <Plus className="h-4 w-4 transition-transform group-hover:rotate-90" />
                             New Script
                         </Link>
                     </div>
@@ -114,42 +114,50 @@ export default function DashboardPage() {
 
                 {/* Stats Cards */}
                 {scripts.length > 0 && (
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
                         {/* Total Scripts */}
-                        <div className="rounded-lg border border-border bg-card p-6">
-                            <div className="flex items-center justify-between mb-2">
-                                <p className="text-sm font-medium text-muted-foreground">Total Scripts</p>
-                                <div className="h-8 w-8 rounded-md bg-primary/10 flex items-center justify-center">
-                                    <FileText className="h-4 w-4 text-primary" />
+                        <div className="bg-white rounded-2xl p-6 relative overflow-hidden group border border-gray-100 shadow-sm">
+                            <div className="absolute top-0 right-0 p-4 opacity-50 group-hover:opacity-100 transition-opacity">
+                                <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                                    <FileText className="h-5 w-5 text-primary" />
                                 </div>
                             </div>
-                            <p className="text-3xl font-bold">{totalScripts}</p>
-                            <p className="text-xs text-muted-foreground mt-1">All time</p>
+
+                            <p className="text-sm font-medium text-gray-600">Total Scripts</p>
+                            <p className="font-outfit text-4xl font-bold mt-2 text-gray-900">{totalScripts}</p>
+                            <div className="mt-2 text-xs flex items-center gap-1 text-emerald-600 font-medium">
+                                <TrendingUp className="h-3 w-3" />
+                                <span>Lifetime output</span>
+                            </div>
                         </div>
 
                         {/* This Week */}
-                        <div className="rounded-lg border border-border bg-card p-6">
-                            <div className="flex items-center justify-between mb-2">
-                                <p className="text-sm font-medium text-muted-foreground">This Week</p>
-                                <div className="h-8 w-8 rounded-md bg-emerald-500/10 flex items-center justify-center">
-                                    <TrendingUp className="h-4 w-4 text-emerald-500" />
+                        <div className="bg-white rounded-2xl p-6 relative overflow-hidden group border border-gray-100 shadow-sm">
+                            <div className="absolute top-0 right-0 p-4 opacity-50 group-hover:opacity-100 transition-opacity">
+                                <div className="h-10 w-10 rounded-full bg-emerald-500/10 flex items-center justify-center">
+                                    <Zap className="h-5 w-5 text-emerald-500" />
                                 </div>
                             </div>
-                            <p className="text-3xl font-bold">{thisWeek}</p>
-                            <p className="text-xs text-muted-foreground mt-1">Last 7 days</p>
+
+                            <p className="text-sm font-medium text-gray-600">This Week</p>
+                            <p className="font-outfit text-4xl font-bold mt-2 text-gray-900">{thisWeek}</p>
+                            <div className="mt-2 text-xs flex items-center gap-1 text-gray-500">
+                                <span>Recent activity</span>
+                            </div>
                         </div>
 
                         {/* Top Platform */}
-                        <div className="rounded-lg border border-border bg-card p-6">
-                            <div className="flex items-center justify-between mb-2">
-                                <p className="text-sm font-medium text-muted-foreground">Top Platform</p>
-                                <div className="h-8 w-8 rounded-md bg-purple-500/10 flex items-center justify-center">
-                                    <BarChart3 className="h-4 w-4 text-purple-500" />
+                        <div className="bg-white rounded-2xl p-6 relative overflow-hidden group border border-gray-100 shadow-sm">
+                            <div className="absolute top-0 right-0 p-4 opacity-50 group-hover:opacity-100 transition-opacity">
+                                <div className="h-10 w-10 rounded-full bg-purple-500/10 flex items-center justify-center">
+                                    <BarChart3 className="h-5 w-5 text-purple-500" />
                                 </div>
                             </div>
-                            <p className="text-3xl font-bold">{Object.keys(platformCounts)[0] || 'None'}</p>
-                            <p className="text-xs text-muted-foreground mt-1">
-                                {(Object.values(platformCounts)[0] as number) || 0} scripts
+
+                            <p className="text-sm font-medium text-gray-600">Top Platform</p>
+                            <p className="font-outfit text-4xl font-bold mt-2 truncate max-w-[80%] text-gray-900">{Object.keys(platformCounts)[0] || 'None'}</p>
+                            <p className="mt-2 text-xs text-gray-500">
+                                {(Object.values(platformCounts)[0] as number) || 0} scripts generated
                             </p>
                         </div>
                     </div>
@@ -157,64 +165,71 @@ export default function DashboardPage() {
 
                 {/* Scripts Grid */}
                 {(!scripts || scripts.length === 0) ? (
-                    <div className="flex flex-col items-center justify-center py-32 border-2 border-dashed border-border rounded-2xl bg-muted/20">
-                        <div className="h-16 w-16 rounded-lg bg-muted flex items-center justify-center mb-4">
-                            <FileText className="h-8 w-8 text-muted-foreground" />
+                    <div className="relative flex flex-col items-center justify-center py-32 rounded-3xl border border-dashed border-border bg-muted/20 overflow-hidden">
+                        <div className="absolute inset-0 bg-gradient-to-tr from-primary/5 to-transparent opacity-50"></div>
+                        <div className="relative z-10 text-center">
+                            <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 flex items-center justify-center mb-6 mx-auto shadow-inner border border-white/10">
+                                <Sparkles className="h-8 w-8 text-primary animate-pulse" />
+                            </div>
+                            <h3 className="text-2xl font-bold mb-2 font-outfit">Your canvas is empty</h3>
+                            <p className="text-muted-foreground mb-8 max-w-sm mx-auto">
+                                The world is waiting for your story. Let AI kickstart your creative process.
+                            </p>
+                            <Link
+                                href="/editor"
+                                className="inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-primary px-8 text-sm font-bold text-primary-foreground shadow-lg shadow-primary/20 hover:bg-primary/90 hover:scale-105 transition-all"
+                            >
+                                <Plus className="h-5 w-5" />
+                                Create Your First Script
+                            </Link>
                         </div>
-                        <h3 className="text-xl font-semibold mb-2">No scripts yet</h3>
-                        <p className="text-muted-foreground mb-6 text-center max-w-sm">
-                            Get started by creating your first AI-generated script
-                        </p>
-                        <Link
-                            href="/editor"
-                            className="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-primary px-6 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
-                        >
-                            <Plus className="h-4 w-4" />
-                            Create Your First Script
-                        </Link>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {scripts.map((script) => (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {scripts.map((script, index) => (
                             <Link
                                 key={script.id}
                                 href={`/editor?id=${script.id}`}
-                                className="group relative rounded-lg border border-border bg-card p-5 transition-all hover:shadow-md hover:border-primary/50"
+                                className="group relative rounded-2xl border border-white/5 bg-card/40 backdrop-blur-sm p-6 transition-all duration-300 hover:border-primary/50 hover:bg-card/60 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/5 animate-in fade-up fill-mode-both"
+                                style={{ animationDelay: `${index * 50}ms` }}
                             >
                                 {/* Header */}
                                 <div className="flex items-start justify-between mb-4">
-                                    <div className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium border ${script.platform === 'LinkedIn'
-                                        ? 'bg-blue-500/10 text-blue-600 border-blue-500/20'
-                                        : script.platform === 'YouTube'
-                                            ? 'bg-red-500/10 text-red-600 border-red-500/20'
-                                            : 'bg-muted text-muted-foreground border-border'
-                                        }`}>
+                                    <div className={`
+                                        inline-flex items-center rounded-lg px-2.5 py-1 text-xs font-bold border 
+                                        ${script.platform === 'LinkedIn' ? 'bg-blue-500/10 text-blue-500 border-blue-500/20' :
+                                            script.platform === 'YouTube' ? 'bg-red-500/10 text-red-500 border-red-500/20' :
+                                                script.platform === 'TikTok' ? 'bg-pink-500/10 text-pink-500 border-pink-500/20' :
+                                                    'bg-gray-500/10 text-gray-500 border-gray-500/20'}
+                                    `}>
                                         {script.platform || 'General'}
                                     </div>
-                                    <div className="flex items-center gap-2">
+                                    <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                         <button
                                             onClick={(e) => handleDelete(e, script.id)}
-                                            className="opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded hover:bg-destructive/10 text-muted-foreground hover:text-destructive"
+                                            className="p-1.5 rounded-lg hover:bg-red-500/10 text-muted-foreground hover:text-red-500 transition-colors"
                                             title="Delete"
                                         >
                                             <Trash2 className="h-4 w-4" />
                                         </button>
-                                        <span className="text-xs text-muted-foreground">
-                                            {new Date(script.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
-                                        </span>
                                     </div>
                                 </div>
 
                                 {/* Title */}
-                                <h3 className="font-semibold mb-2 line-clamp-1 group-hover:text-primary transition-colors">
+                                <h3 className="font-outfit font-bold text-lg mb-2 line-clamp-1 group-hover:text-primary transition-colors">
                                     {script.title || 'Untitled Script'}
                                 </h3>
 
+                                <span className="text-[10px] uppercase tracking-wider text-muted-foreground/60 font-semibold mb-3 block">
+                                    {new Date(script.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+                                </span>
+
                                 {/* Preview */}
-                                <div className="rounded-md bg-muted/50 p-3 border border-border">
-                                    <p className="text-sm text-muted-foreground line-clamp-3">
-                                        {(script.content as any)?.text?.substring(0, 120) || (script.content as any)?.visual?.[0] || 'No content preview'}...
+                                <div className="rounded-xl bg-background/50 p-4 border border-white/5 h-24 overflow-hidden relative">
+                                    <p className="text-sm text-muted-foreground leading-relaxed">
+                                        {(script.content as any)?.text?.substring(0, 150) || (script.content as any)?.visual?.[0] || 'No preview available...'}
                                     </p>
+                                    <div className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-background/90 to-transparent"></div>
                                 </div>
                             </Link>
                         ))}

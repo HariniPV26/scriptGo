@@ -1,0 +1,16 @@
+{
+  "account": {
+    "Name": "Harini P V",
+    "Email": "harinivenkataramanan2219@gmail.com",
+    "Teams": [
+      "harinivenkataramanan2219’s team"
+    ]
+  },
+  "siteData": {
+    "site-name": "aquamarine-rabanadas-e82abc",
+    "config-path": "E:\\ScriptGo\\netlify.toml",
+    "admin-url": "https://app.netlify.com/projects/aquamarine-rabanadas-e82abc",
+    "site-url": "https://aquamarine-rabanadas-e82abc.netlify.app",
+    "site-id": "a476cdf0-48dd-4c65-8bcb-d1474a6a8a67"
+  }
+}

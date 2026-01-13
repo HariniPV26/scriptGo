@@ -1,0 +1,16 @@
+──────────────────────┐
+ Current Netlify User │
+──────────────────────┘
+[32mName: [39m Harini P V
+[32mEmail: [39mharinivenkataramanan2219@gmail.com
+[32mTeams: [39m
+  [32m- [39mharinivenkataramanan2219’s team
+────────────────────┐
+ Netlify Project Info  │
+────────────────────┘
+[32mCurrent project: [39maquamarine-rabanadas-e82abc
+[32mNetlify TOML: [39m   E:\ScriptGo\netlify.toml
+[32mAdmin URL: [39m      https://app.netlify.com/projects/aquamarine-rabanadas-e82abc
+[32mProject URL: [39m    https://aquamarine-rabanadas-e82abc.netlify.app
+[32mProject Id: [39m     a476cdf0-48dd-4c65-8bcb-d1474a6a8a67
+

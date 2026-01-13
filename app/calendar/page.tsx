@@ -37,7 +37,10 @@ export default function ContentCalendarPage() {
     const [platform, setPlatform] = useState('LinkedIn')
     const [tone, setTone] = useState('Professional')
     const [language, setLanguage] = useState('English')
+
     const [framework, setFramework] = useState('None')
+    // new Date().toISOString().split('T')[0] gives YYYY-MM-DD
+    const [startDate, setStartDate] = useState(new Date().toISOString().split('T')[0])
 
     // Result state
     const [calendarItems, setCalendarItems] = useState<any[]>([])
@@ -70,7 +73,6 @@ export default function ContentCalendarPage() {
                 if (frameworkParam) setFramework(frameworkParam)
 
                 if (autoGen === 'true' && topicParam) {
-                    // Trigger generation after a short delay to ensure state is set
                     setTimeout(() => {
                         const form = document.querySelector('form')
                         if (form) form.requestSubmit()
@@ -86,7 +88,7 @@ export default function ContentCalendarPage() {
         e.preventDefault()
         setLoading(true)
         try {
-            const result = await generateCalendarContent(topic, days, tone, platform, language, framework)
+            const result = await generateCalendarContent(topic, days, tone, platform, language, framework, startDate)
             if (result.items && result.items.length > 0) {
                 setCalendarItems(result.items)
             } else if (result.error) {
@@ -112,14 +114,20 @@ export default function ContentCalendarPage() {
         const supabase = createClient()
 
         try {
-            // Bulk insert into scripts table
-            const scriptsToInsert = calendarItems.map(item => ({
-                user_id: user.id,
-                title: item.title,
-                platform: platform,
-                content: { text: item.content },
-                created_at: new Date().toISOString()
-            }))
+            const scriptsToInsert = calendarItems.map(item => {
+                const date = new Date(startDate)
+                date.setDate(date.getDate() + (item.day - 1))
+
+                return {
+                    user_id: user.id,
+                    title: item.title,
+                    platform: platform,
+                    content: { text: item.content },
+                    label: item.label,
+                    scheduled_for: date.toISOString(),
+                    created_at: new Date().toISOString()
+                }
+            })
 
             const { error } = await supabase
                 .from('scripts')
@@ -143,30 +151,33 @@ export default function ContentCalendarPage() {
 
     if (authLoading) {
         return (
-            <div className="min-h-screen flex items-center justify-center">
+            <div className="min-h-screen flex items-center justify-center bg-background">
                 <Loader2 className="h-8 w-8 animate-spin text-primary" />
             </div>
         )
     }
 
     return (
-        <div className="min-h-screen bg-background flex flex-col">
+        <div className="min-h-screen bg-background flex flex-col font-sans selection:bg-primary/20">
             <Header />
 
-            <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
+            <div className="flex-1 flex flex-col md:flex-row h-[calc(100vh-64px)] overflow-hidden">
                 {/* Sidebar Configuration */}
-                <aside className="w-full md:w-80 border-r border-border bg-card/50 backdrop-blur-sm p-6 overflow-y-auto shrink-0 transition-all">
-                    <div className="flex items-center gap-2 mb-8">
-                        <div className="bg-primary/10 p-2 rounded-lg">
+                <aside className="w-full md:w-80 border-r border-white/5 bg-background/30 backdrop-blur-xl p-6 overflow-y-auto shrink-0 transition-all custom-scrollbar z-10 relative">
+                    <div className="flex items-center gap-3 mb-8">
+                        <div className="h-10 w-10 bg-primary/10 rounded-xl flex items-center justify-center">
                             <CalendarIcon className="h-5 w-5 text-primary" />
                         </div>
-                        <h2 className="text-xl font-bold">Plan Content</h2>
+                        <div>
+                            <h2 className="text-lg font-outfit font-bold">Plan Content</h2>
+                            <p className="text-xs text-muted-foreground">AI Strategy Generator</p>
+                        </div>
                     </div>
 
                     <form onSubmit={handleGenerate} className="space-y-6 pb-20">
                         {/* Days Selection */}
                         <div className="space-y-3">
-                            <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
+                            <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
                                 <Clock className="h-3 w-3" /> Duration
                             </label>
                             <div className="grid grid-cols-3 gap-2">
@@ -175,9 +186,9 @@ export default function ContentCalendarPage() {
                                         key={d}
                                         type="button"
                                         onClick={() => setDays(d)}
-                                        className={`py-2 rounded-xl text-sm font-bold transition-all border ${days === d
+                                        className={`py-2 px-1 rounded-xl text-xs font-bold transition-all border ${days === d
                                             ? 'bg-primary text-primary-foreground border-primary shadow-lg shadow-primary/20'
-                                            : 'bg-muted/50 text-muted-foreground border-border hover:bg-muted'
+                                            : 'bg-muted/50 text-muted-foreground border-transparent hover:bg-muted hover:text-foreground'
                                             }`}
                                     >
                                         {d} Days
@@ -186,9 +197,23 @@ export default function ContentCalendarPage() {
                             </div>
                         </div>
 
+
+                        {/* Start Date */}
+                        <div className="space-y-3">
+                            <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
+                                <CalendarIcon className="h-3 w-3" /> Start Date
+                            </label>
+                            <input
+                                type="date"
+                                value={startDate}
+                                onChange={(e) => setStartDate(e.target.value)}
+                                className="w-full px-4 py-3 bg-muted/30 border border-white/5 rounded-xl text-xs font-bold focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-foreground [color-scheme:dark]"
+                            />
+                        </div>
+
                         {/* Platform */}
                         <div className="space-y-3">
-                            <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Platform</label>
+                            <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Platform</label>
                             <div className="grid grid-cols-2 gap-2">
                                 {[
                                     { name: 'LinkedIn', icon: Linkedin },
@@ -201,8 +226,8 @@ export default function ContentCalendarPage() {
                                         type="button"
                                         onClick={() => setPlatform(p.name)}
                                         className={`p-3 rounded-xl text-xs font-bold transition-all flex flex-col items-center gap-2 border ${platform === p.name
-                                            ? 'bg-primary/10 text-primary border-primary shadow-sm'
-                                            : 'bg-muted/30 text-muted-foreground border-border hover:bg-muted/50'
+                                            ? 'bg-primary/10 text-primary border-primary/50 shadow-sm'
+                                            : 'bg-muted/30 text-muted-foreground border-transparent hover:bg-muted/50 hover:text-foreground'
                                             }`}
                                     >
                                         <p.icon className="h-4 w-4" />
@@ -214,146 +239,170 @@ export default function ContentCalendarPage() {
 
                         {/* Topic */}
                         <div className="space-y-3">
-                            <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Topic / Goal</label>
+                            <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Topic / Goal</label>
                             <textarea
                                 value={topic}
                                 onChange={(e) => setTopic(e.target.value)}
                                 placeholder="E.g. Daily productivity tips for remote workers..."
                                 required
-                                className="w-full px-4 py-3 bg-card border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 h-28 resize-none font-medium"
+                                className="w-full px-4 py-3 bg-muted/30 border border-white/5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 h-28 resize-none font-medium placeholder:text-muted-foreground/50 transition-all focus:bg-background"
                             />
                         </div>
 
                         {/* Tone */}
                         <div className="space-y-3">
-                            <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Tone</label>
-                            <select
-                                value={tone}
-                                onChange={(e) => setTone(e.target.value)}
-                                className="w-full px-4 py-2.5 bg-card border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
-                            >
-                                <option>Professional</option>
-                                <option>Friendly</option>
-                                <option>Witty</option>
-                                <option>Persuasive</option>
-                                <option>Edgy</option>
-                            </select>
+                            <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Tone</label>
+                            <div className="relative">
+                                <select
+                                    value={tone}
+                                    onChange={(e) => setTone(e.target.value)}
+                                    className="w-full px-4 py-3 bg-muted/30 border border-white/5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 appearance-none font-medium cursor-pointer hover:bg-muted/50 transition-colors text-foreground"
+                                >
+                                    <option>Professional</option>
+                                    <option>Friendly</option>
+                                    <option>Witty</option>
+                                    <option>Persuasive</option>
+                                    <option>Edgy</option>
+                                </select>
+                                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                                    <ChevronRight className="h-4 w-4 text-muted-foreground rotate-90" />
+                                </div>
+                            </div>
                         </div>
 
-                        {/* Language */}
-                        <div className="space-y-3">
-                            <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
-                                <Languages className="h-3 w-3" /> Language
-                            </label>
-                            <select
-                                value={language}
-                                onChange={(e) => setLanguage(e.target.value)}
-                                className="w-full px-4 py-2.5 bg-card border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
-                            >
-                                <option>English</option>
-                                <option>Tamil</option>
-                                <option>Hindi</option>
-                                <option>Spanish</option>
-                                <option>French</option>
-                                <option>German</option>
-                            </select>
-                        </div>
-
-                        {/* Framework */}
-                        <div className="space-y-3">
-                            <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
-                                <Layers className="h-3 w-3" /> Framework
-                            </label>
-                            <select
-                                value={framework}
-                                onChange={(e) => setFramework(e.target.value)}
-                                className="w-full px-4 py-2.5 bg-card border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
-                            >
-                                <option value="None">None</option>
-                                <option value="AIDA">AIDA</option>
-                                <option value="PAS">PAS</option>
-                            </select>
+                        {/* Advanced Options (Language & Framework) */}
+                        <div className="grid grid-cols-2 gap-3">
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
+                                    <Languages className="h-3 w-3" /> Language
+                                </label>
+                                <select
+                                    value={language}
+                                    onChange={(e) => setLanguage(e.target.value)}
+                                    className="w-full px-3 py-2 bg-muted/30 border border-white/5 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-primary/50 font-medium"
+                                >
+                                    <option>English</option>
+                                    <option>Tamil</option>
+                                    <option>Hindi</option>
+                                    <option>Spanish</option>
+                                    <option>French</option>
+                                    <option>German</option>
+                                </select>
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
+                                    <Layers className="h-3 w-3" /> Framework
+                                </label>
+                                <select
+                                    value={framework}
+                                    onChange={(e) => setFramework(e.target.value)}
+                                    className="w-full px-3 py-2 bg-muted/30 border border-white/5 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-primary/50 font-medium"
+                                >
+                                    <option value="None">None</option>
+                                    <option value="AIDA">AIDA</option>
+                                    <option value="PAS">PAS</option>
+                                </select>
+                            </div>
                         </div>
 
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full py-4 bg-primary text-primary-foreground font-bold rounded-xl shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-70"
+                            className="w-full py-4 bg-gradient-to-r from-primary to-purple-600 text-white font-bold rounded-xl shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-70 group"
                         >
-                            {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : <><Wand2 className="h-5 w-5" /> Generate Calendar</>}
+                            {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : <>
+                                <Wand2 className="h-5 w-5 group-hover:rotate-12 transition-transform" />
+                                Generate Calendar
+                            </>}
                         </button>
                     </form>
                 </aside>
 
                 {/* Main Content Area */}
-                <main className="flex-1 p-6 md:p-10 overflow-auto relative">
-                    {/* Background noise/gradient */}
-                    <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-10 pointer-events-none"></div>
+                <main className="flex-1 p-6 md:p-10 overflow-auto relative custom-scrollbar bg-black/5 dark:bg-black/20">
 
                     {calendarItems.length === 0 ? (
-                        <div className="h-full flex flex-col items-center justify-center text-center animate-in fade-in duration-700">
-                            <div className="h-24 w-24 bg-card rounded-3xl flex items-center justify-center mb-8 ring-1 ring-border shadow-xl">
-                                <CalendarIcon className="h-10 w-10 text-primary opacity-20" />
+                        <div className="h-full flex flex-col items-center justify-center text-center animate-in fade-in zoom-in-95 duration-700">
+                            <div className="relative mb-8">
+                                <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full"></div>
+                                <div className="h-24 w-24 bg-background/50 backdrop-blur-xl rounded-3xl flex items-center justify-center ring-1 ring-white/10 relative z-10 glass-card">
+                                    <CalendarIcon className="h-10 w-10 text-primary" />
+                                </div>
                             </div>
-                            <h2 className="text-3xl font-bold mb-4 tracking-tight">Your Content Journey Starts Here</h2>
-                            <p className="text-muted-foreground max-w-md mx-auto leading-relaxed">
-                                Use the configuration on the left to generate your {days}-day content strategy.
-                                We'll create unique titles and scripts for every single day.
+                            <h2 className="text-4xl font-outfit font-bold mb-4 tracking-tight">Your Content Journey Starts Here</h2>
+                            <p className="text-muted-foreground max-w-md mx-auto leading-relaxed text-lg">
+                                Use the AI tool on the left to generate your {days}-day content strategy.
                             </p>
                         </div>
                     ) : (
-                        <div className="max-w-7xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700">
-                            <div className="flex items-center justify-between mb-10">
+                        <div className="max-w-7xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700 pb-20">
+                            <div className="flex flex-col md:flex-row md:items-center justify-between mb-10 gap-6 glass-card p-6 rounded-2xl sticky top-0 z-20 backdrop-blur-xl border border-white/10">
                                 <div>
-                                    <h2 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-foreground to-zinc-500">
-                                        {days} Day Strategy: {topic}
-                                    </h2>
-                                    <div className="flex items-center gap-4 mt-2">
-                                        <span className="text-xs font-bold uppercase tracking-widest text-primary bg-primary/10 px-3 py-1 rounded-full border border-primary/20">
-                                            {platform}
-                                        </span>
-                                        <span className="text-xs font-medium text-muted-foreground flex items-center gap-1">
-                                            <Hash className="h-3 w-3" /> {calendarItems.length} Posts Generated
-                                        </span>
+                                    <div className="flex items-center gap-2 mb-1">
+                                        <span className="text-xs font-bold px-2 py-0.5 rounded bg-primary/10 text-primary border border-primary/20">STRATEGY</span>
+                                        <span className="text-xs text-muted-foreground">{days} Days</span>
                                     </div>
+                                    <h2 className="text-2xl font-bold font-outfit truncate max-w-md">
+                                        {topic}
+                                    </h2>
                                 </div>
-                                <button
-                                    onClick={handleSaveAll}
-                                    disabled={saving}
-                                    className="flex items-center gap-2 px-6 py-3 bg-foreground text-background hover:opacity-90 rounded-xl font-bold transition-all shadow-xl disabled:opacity-50"
-                                >
-                                    {saving ? <Loader2 className="h-5 w-5 animate-spin" /> : <Save className="h-5 w-5" />}
-                                    <span>Save All to Workshop</span>
-                                </button>
+                                <div className="flex items-center gap-3">
+                                    <div className="hidden md:flex flex-col items-end mr-4">
+                                        <span className="text-xs font-bold">{calendarItems.length} Posts</span>
+                                        <span className="text-[10px] text-muted-foreground">{platform} • {language}</span>
+                                    </div>
+                                    <button
+                                        onClick={handleSaveAll}
+                                        disabled={saving}
+                                        className="flex items-center gap-2 px-6 py-3 bg-foreground text-background hover:bg-foreground/90 rounded-xl font-bold transition-all shadow-lg hover:scale-105 active:scale-95 disabled:opacity-50 disabled:scale-100"
+                                    >
+                                        {saving ? <Loader2 className="h-5 w-5 animate-spin" /> : <Save className="h-5 w-5" />}
+                                        <span>Save All to Workshop</span>
+                                    </button>
+                                </div>
                             </div>
 
                             <div className={`grid gap-4 ${days === 30 ? 'grid-cols-2 md:grid-cols-4 lg:grid-cols-7' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'}`}>
                                 {calendarItems.map((item, idx) => (
                                     <div
                                         key={idx}
-                                        className={`group bg-card border border-border rounded-2xl overflow-hidden hover:border-primary/50 transition-all duration-300 hover:shadow-2xl hover:shadow-primary/5 flex flex-col ${days === 30 ? 'aspect-square md:aspect-auto' : ''}`}
+                                        className={`group bg-card/40 backdrop-blur-sm border border-white/5 rounded-2xl overflow-hidden hover:border-primary/50 transition-all duration-300 hover:shadow-xl hover:shadow-primary/5 hover:-translate-y-1 flex flex-col ${days === 30 ? 'aspect-square md:aspect-auto' : ''}`}
                                     >
-                                        <div className={`p-4 flex-1 ${days === 30 ? 'flex flex-col' : ''}`}>
-                                            <div className="flex items-center justify-between mb-2">
-                                                <span className={`${days === 30 ? 'text-2xl' : 'text-4xl'} font-black text-muted-foreground/10 group-hover:text-primary/10 transition-colors`}>
-                                                    Day-{String(item.day || idx + 1).padStart(2, '0')}
-                                                </span>
-                                                <CheckCircle2 className="h-4 w-4 text-muted-foreground/20 group-hover:text-primary transition-colors" />
+                                        <div className={`p-5 flex-1 ${days === 30 ? 'flex flex-col' : ''}`}>
+                                            <div className="flex items-center justify-between mb-3">
+                                                <div className="flex flex-col">
+                                                    <span className="text-xs font-bold text-primary mb-0.5">
+                                                        {(() => {
+                                                            const d = new Date(startDate);
+                                                            d.setDate(d.getDate() + (item.day - 1));
+                                                            return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', weekday: 'short' });
+                                                        })()}
+                                                    </span>
+                                                    <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold bg-white/5 px-1.5 py-0.5 rounded w-fit">
+                                                        {item.label || 'Post'}
+                                                    </span>
+                                                </div>
+                                                <div className="h-8 w-8 rounded-full bg-background/50 flex items-center justify-center border border-white/5 group-hover:border-primary/50 transition-colors">
+                                                    {platform === 'LinkedIn' ? <Linkedin className="h-4 w-4 text-blue-500" /> :
+                                                        platform === 'YouTube' ? <MonitorPlay className="h-4 w-4 text-red-500" /> :
+                                                            <Sparkles className="h-4 w-4 text-pink-500" />}
+                                                </div>
                                             </div>
-                                            <h3 className={`font-bold text-foreground mb-2 line-clamp-2 leading-tight group-hover:text-primary transition-colors ${days === 30 ? 'text-xs' : 'text-sm'}`}>
+                                            <h3 className={`font-bold font-outfit text-foreground mb-2 line-clamp-2 leading-tight group-hover:text-primary transition-colors ${days === 30 ? 'text-xs' : 'text-base'}`}>
                                                 {item.title}
                                             </h3>
                                             {days !== 30 && (
-                                                <p className="text-muted-foreground text-xs line-clamp-3 leading-relaxed opacity-70">
+                                                <p className="text-muted-foreground text-xs line-clamp-3 leading-relaxed opacity-70 mb-4 font-medium">
                                                     {item.content}
                                                 </p>
                                             )}
                                         </div>
                                         <button
                                             onClick={() => setSelectedItem(item)}
-                                            className="w-full py-2 bg-muted/30 border-t border-border text-[10px] font-bold hover:bg-primary hover:text-white transition-all flex items-center justify-center gap-1"
+                                            className="w-full py-3 bg-muted/20 border-t border-white/5 text-[10px] uppercase tracking-widest font-bold hover:bg-primary hover:text-white transition-all flex items-center justify-center gap-2 group/btn"
                                         >
-                                            {days === 30 ? 'View' : 'View Script'} <ChevronRight className="h-3 w-3" />
+                                            {days === 30 ? 'OPEN' : 'READ SCRIPT'}
+                                            <ChevronRight className="h-3 w-3 group-hover/btn:translate-x-1 transition-transform" />
                                         </button>
                                     </div>
                                 ))}
@@ -363,48 +412,63 @@ export default function ContentCalendarPage() {
                 </main>
             </div>
 
-            {/* Modal for viewing script */}
-            {selectedItem && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-10">
-                    <div className="absolute inset-0 bg-background/80 backdrop-blur-md" onClick={() => setSelectedItem(null)}></div>
-                    <div className="relative bg-card border border-border w-full max-w-4xl max-h-[90vh] rounded-3xl shadow-2xl overflow-hidden flex flex-col animate-in zoom-in-95 duration-200">
-                        <div className="p-6 border-b border-border flex items-center justify-between bg-muted/30">
-                            <div className="flex items-center gap-3">
-                                <div className="h-10 w-12 bg-primary/10 rounded-xl flex items-center justify-center shrink-0">
-                                    <span className="font-black text-primary text-xs">Day-{String(selectedItem.day).padStart(2, '0')}</span>
+            {/* Premium Modal */}
+            {
+                selectedItem && (
+                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-10 perspective-1000">
+                        <div className="absolute inset-0 bg-background/80 backdrop-blur-xl transition-opacity animate-in fade-in" onClick={() => setSelectedItem(null)}></div>
+                        <div className="relative bg-card/90 border border-white/10 w-full max-w-4xl max-h-[85vh] rounded-[2rem] shadow-2xl overflow-hidden flex flex-col animate-in zoom-in-95 duration-300 ring-1 ring-white/10">
+
+                            {/* Modal Header */}
+                            <div className="p-6 md:p-8 border-b border-white/5 flex items-start justify-between bg-black/20">
+                                <div className="flex gap-4">
+                                    <div className="h-12 w-12 bg-primary/10 rounded-2xl flex items-center justify-center shrink-0 border border-primary/20">
+                                        <span className="font-outfit font-black text-primary text-sm">Day {selectedItem.day}</span>
+                                    </div>
+                                    <div>
+                                        <h3 className="font-outfit font-bold text-2xl leading-tight mb-1">{selectedItem.title}</h3>
+                                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                                            <span className="px-2 py-0.5 rounded-full bg-white/5 border border-white/5">{platform}</span>
+                                            <span className="px-2 py-0.5 rounded-full bg-white/5 border border-white/5">{tone} Tone</span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <h3 className="font-bold text-xl">{selectedItem.title}</h3>
+                                <div className="flex items-center gap-2">
+                                    <button
+                                        onClick={() => handleCopy(selectedItem.content)}
+                                        className="p-2.5 rounded-xl bg-muted/50 hover:bg-primary hover:text-white transition-colors text-muted-foreground group"
+                                        title="Copy to clipboard"
+                                    >
+                                        <Copy className="h-5 w-5 group-active:scale-90 transition-transform" />
+                                    </button>
+                                    <button
+                                        onClick={() => setSelectedItem(null)}
+                                        className="p-2.5 rounded-xl bg-muted/50 hover:bg-red-500/10 hover:text-red-500 transition-colors text-muted-foreground"
+                                    >
+                                        <X className="h-5 w-5" />
+                                    </button>
+                                </div>
                             </div>
-                            <div className="flex items-center gap-2">
-                                <button
-                                    onClick={() => handleCopy(selectedItem.content)}
-                                    className="p-2.5 rounded-xl bg-muted hover:bg-muted-foreground/10 transition-colors text-muted-foreground hover:text-foreground"
-                                    title="Copy to clipboard"
-                                >
-                                    <Copy className="h-5 w-5" />
-                                </button>
+
+                            {/* Modal Content */}
+                            <div className="p-8 md:p-10 overflow-y-auto font-mono text-sm leading-relaxed whitespace-pre-wrap selection:bg-primary/20 bg-black/10 custom-scrollbar">
+                                {selectedItem.content}
+                            </div>
+
+                            {/* Modal Footer */}
+                            <div className="p-6 border-t border-white/5 bg-black/20 flex justify-between items-center">
+                                <span className="text-xs font-mono text-muted-foreground opacity-50">AI Generated Content • {new Date().getFullYear()}</span>
                                 <button
                                     onClick={() => setSelectedItem(null)}
-                                    className="p-2.5 rounded-xl bg-muted hover:bg-destructive/10 transition-colors text-muted-foreground hover:text-destructive"
+                                    className="px-8 py-3 rounded-xl bg-primary text-white font-bold text-sm hover:shadow-lg hover:shadow-primary/20 hover:-translate-y-0.5 transition-all"
                                 >
-                                    <X className="h-5 w-5" />
+                                    Done Reading
                                 </button>
                             </div>
                         </div>
-                        <div className="p-8 overflow-y-auto font-mono text-sm leading-relaxed whitespace-pre-wrap selection:bg-primary/20">
-                            {selectedItem.content}
-                        </div>
-                        <div className="p-6 border-t border-border bg-muted/20 flex justify-end">
-                            <button
-                                onClick={() => setSelectedItem(null)}
-                                className="px-6 py-2.5 rounded-xl bg-foreground text-background font-bold text-sm hover:opacity-90 transition-opacity"
-                            >
-                                Done
-                            </button>
-                        </div>
                     </div>
-                </div>
-            )}
-        </div>
+                )
+            }
+        </div >
     )
 }

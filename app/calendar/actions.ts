@@ -12,7 +12,8 @@ export async function generateCalendarContent(
     tone: string,
     platform: string,
     language: string = 'English',
-    framework: string = 'None'
+    framework: string = 'None',
+    startDate?: string
 ) {
     if (!process.env.OPENAI_API_KEY) {
         console.error('OPENAI_API_KEY is not set in environment variables')
@@ -26,6 +27,8 @@ export async function generateCalendarContent(
         frameworkInstruction = `Use the PAS model (Problem, Agitation, Solution) for each post.`
     }
 
+    const dateInstruction = startDate ? `The calendar starts on ${startDate}. Ensure content is relevant to the dates if applicable (e.g. weekends, holidays).` : ''
+
     const prompt = `
     TASK: Generate a ${days}-day content calendar.
     TOPIC: ${topic}
@@ -33,6 +36,7 @@ export async function generateCalendarContent(
     PLATFORM: ${platform}
     LANGUAGE: ${language}
     FRAMEWORK: ${frameworkInstruction}
+    CONTEXT: ${dateInstruction}
 
     Deliver EXACTLY ${days} unique content pieces, one for each consecutive day.
     
@@ -42,7 +46,8 @@ export async function generateCalendarContent(
     {
       "day": number (1 to ${days}),
       "title": "A short, catchy title for this day's content",
-      "content": "The full script or post content following the platform and tone requirements"
+      "content": "The full script or post content following the platform and tone requirements",
+      "label": "A short 1-2 word category label (e.g. Educational, Growth, Sales, Personal, Case Study)"
     }
 
     PLATFORM SPECIFIC RULES:
