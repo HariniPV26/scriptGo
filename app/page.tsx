@@ -59,7 +59,7 @@ export default function LandingPage() {
 
             <h1 className="text-7xl md:text-9xl font-black text-white leading-[0.85] tracking-tighter uppercase italic animate-in fade-in slide-in-from-bottom-8 duration-1000">
               Scale at <br />
-              <span className="text-primary glow-text">Lightspeed.</span>
+              <span className="text-primary glow-text">Lightspeed ⚡</span>
             </h1>
 
             <p className="max-w-2xl mx-auto text-xl md:text-2xl text-white/40 font-medium leading-relaxed animate-in fade-in delay-300">
