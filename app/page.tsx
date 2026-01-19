@@ -1,43 +1,43 @@
 'use client'
 
 import Link from 'next/link'
-import { Rocket, ArrowRight, Zap, ShieldCheck, Sparkles, Star } from 'lucide-react'
+import { Rocket, ArrowRight, Zap, Target, TrendingUp, Sparkles, CheckCircle2, Play, Users, Award, BarChart3, Globe } from 'lucide-react'
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-[#080B12] text-foreground selection:bg-primary selection:text-white font-inter overflow-x-hidden">
+    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white text-slate-900 font-inter overflow-x-hidden">
 
-      {/* STOA NAVBAR */}
-      <nav className="fixed top-0 w-full z-50 border-b border-white/5 bg-[#080B12]/80 backdrop-blur-xl">
+      {/* MODERN NAVBAR */}
+      <nav className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-xl border-b border-slate-200/60">
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="h-10 w-10 bg-primary rounded-xl flex items-center justify-center shadow-[0_0_20px_rgba(16,185,129,0.3)] transition-all group-hover:scale-110">
-              <Rocket className="h-6 w-6 text-white" />
+            <div className="h-10 w-10 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/30 transition-all group-hover:scale-105 group-hover:shadow-emerald-500/40">
+              <Rocket className="h-5 w-5 text-white" />
             </div>
-            <span className="font-outfit font-bold text-2xl tracking-tighter text-white">ScriptGo</span>
+            <span className="font-outfit font-bold text-xl tracking-tight text-slate-900">ScriptGo</span>
           </Link>
 
-          <div className="hidden md:flex items-center gap-10">
-            {['Features', 'Method', 'Pricing'].map((item) => (
+          <div className="hidden md:flex items-center gap-8">
+            {['Features', 'How it Works', 'Pricing'].map((item) => (
               <Link
                 key={item}
-                href={`#${item.toLowerCase()}`}
-                className="text-[11px] font-black uppercase tracking-[0.3em] text-white/40 hover:text-primary transition-colors"
+                href={`#${item.toLowerCase().replace(' ', '-')}`}
+                className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors"
               >
                 {item}
               </Link>
             ))}
           </div>
 
-          <div className="flex items-center gap-6">
-            <Link href="/login" className="text-[11px] font-black uppercase tracking-[0.3em] text-white/40 hover:text-white transition-colors">
-              Login
+          <div className="flex items-center gap-4">
+            <Link href="/login" className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">
+              Sign in
             </Link>
             <Link
               href="/login?tab=signup"
-              className="h-11 px-8 bg-primary rounded-full text-[11px] font-black uppercase tracking-[0.3em] text-white flex items-center justify-center hover:bg-primary/80 transition-all hover:shadow-[0_0_30px_rgba(16,185,129,0.4)] active:scale-95"
+              className="h-11 px-6 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-xl text-sm font-semibold text-white flex items-center justify-center hover:shadow-lg hover:shadow-emerald-500/30 transition-all active:scale-95"
             >
-              Start Building
+              Get Started Free
             </Link>
           </div>
         </div>
@@ -45,67 +45,97 @@ export default function LandingPage() {
 
       <main>
         {/* HERO SECTION */}
-        <section className="relative pt-40 pb-32 px-6">
-          <div className="absolute inset-0 z-0">
-            <div className="absolute top-[10%] left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-primary/10 blur-[150px] rounded-full pointer-events-none"></div>
-            <div className="absolute top-0 left-0 w-full h-full bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 pointer-events-none"></div>
+        <section className="relative pt-32 pb-20 px-6 overflow-hidden">
+          {/* Background Elements */}
+          <div className="absolute inset-0 -z-10">
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-gradient-to-br from-emerald-100 via-teal-50 to-transparent rounded-full blur-3xl opacity-60"></div>
+            <div className="absolute top-20 right-0 w-[600px] h-[600px] bg-gradient-to-bl from-blue-100 to-transparent rounded-full blur-3xl opacity-40"></div>
           </div>
 
-          <div className="max-w-7xl mx-auto relative z-10 text-center space-y-12">
-            <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full border border-primary/20 bg-primary/5 animate-in fade-in slide-in-from-top-4 duration-1000">
-              <span className="h-2 w-2 rounded-full bg-primary animate-pulse"></span>
-              <span className="text-[10px] font-black uppercase tracking-[0.4em] text-primary">Protocol v2.0 Live</span>
-            </div>
+          <div className="max-w-7xl mx-auto">
+            <div className="grid lg:grid-cols-2 gap-16 items-center">
+              {/* Left Column - Content */}
+              <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+                {/* Badge */}
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-50 border border-emerald-200">
+                  <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                  <span className="text-xs font-semibold text-emerald-700">AI-Powered Content Generation</span>
+                </div>
 
-            <h1 className="text-7xl md:text-9xl font-black text-white leading-[0.85] tracking-tighter uppercase italic animate-in fade-in slide-in-from-bottom-8 duration-1000">
-              Scale at <br />
-              <span className="text-primary glow-text">Lightspeed ⚡</span>
-            </h1>
+                {/* Headline */}
+                <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-slate-900 leading-tight tracking-tight">
+                  Create viral scripts in{' '}
+                  <span className="bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+                    seconds
+                  </span>
+                </h1>
 
-            <p className="max-w-2xl mx-auto text-xl md:text-2xl text-white/40 font-medium leading-relaxed animate-in fade-in delay-300">
-              The high-fidelity scripting environment for elite creators. Engineered for algorithmic dominance across all platforms.
-            </p>
+                {/* Subheading */}
+                <p className="text-xl text-slate-600 leading-relaxed max-w-xl">
+                  Generate data-driven content for LinkedIn, YouTube, and TikTok using advanced AI frameworks. Join 5,000+ creators scaling their influence.
+                </p>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-8 animate-in fade-in delay-500">
-              <Link
-                href="/login?tab=signup"
-                className="h-16 px-12 bg-white text-black rounded-2xl text-xs font-black uppercase tracking-[0.4em] flex items-center justify-center gap-3 hover:bg-primary hover:text-white transition-all group shadow-xl"
-              >
-                Get Access <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
-              </Link>
-              <Link
-                href="#features"
-                className="h-16 px-12 border border-white/5 bg-white/[0.03] backdrop-blur text-white rounded-2xl text-xs font-black uppercase tracking-[0.4em] flex items-center justify-center hover:bg-white/[0.08] transition-all"
-              >
-                View Method
-              </Link>
-            </div>
-          </div>
-        </section>
+                {/* CTA Buttons */}
+                <div className="flex flex-col sm:flex-row gap-4 pt-4">
+                  <Link
+                    href="/login?tab=signup"
+                    className="h-14 px-8 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-xl text-base font-semibold text-white flex items-center justify-center gap-2 hover:shadow-xl hover:shadow-emerald-500/30 transition-all group"
+                  >
+                    Start Free Trial
+                    <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                  </Link>
+                  <button className="h-14 px-8 bg-white border-2 border-slate-200 rounded-xl text-base font-semibold text-slate-700 flex items-center justify-center gap-2 hover:border-slate-300 hover:bg-slate-50 transition-all group">
+                    <Play className="h-5 w-5 text-emerald-600" />
+                    Watch Demo
+                  </button>
+                </div>
 
-        {/* VISUAL PREVIEW - MOCKUP SECTION */}
-        <section className="px-6 pb-32">
-          <div className="max-w-6xl mx-auto">
-            <div className="relative p-2 rounded-[3.5rem] bg-gradient-to-b from-white/10 to-transparent border border-white/10 shadow-[0_40px_100px_rgba(0,0,0,0.8)]">
-              <div className="rounded-[3rem] overflow-hidden bg-[#0A1A12] aspect-video relative group">
-                <img
-                  src="/assets/images/stoa-visual.png"
-                  alt="Platform Preview"
-                  className="w-full h-full object-cover opacity-60 transition-transform duration-700 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0A1A12] to-transparent"></div>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="h-24 w-24 bg-primary rounded-full flex items-center justify-center shadow-[0_0_50px_rgba(16,185,129,0.6)] animate-pulse cursor-pointer">
-                    <Zap className="h-10 w-10 text-white fill-current" />
+                {/* Trust Indicators */}
+                <div className="flex items-center gap-6 pt-4">
+                  <div className="flex -space-x-3">
+                    {[1, 2, 3, 4].map((i) => (
+                      <div key={i} className="h-10 w-10 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 border-2 border-white"></div>
+                    ))}
+                  </div>
+                  <div className="text-sm">
+                    <div className="font-semibold text-slate-900">5,000+ creators</div>
+                    <div className="text-slate-600">already using ScriptGo</div>
                   </div>
                 </div>
-                <div className="absolute bottom-12 left-12 right-12 flex justify-between items-end">
+              </div>
+
+              {/* Right Column - Product Visual */}
+              <div className="relative animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-200">
+                <div className="relative rounded-2xl overflow-hidden shadow-2xl shadow-slate-900/10 border border-slate-200/60 bg-white p-8">
+                  {/* Mockup Content */}
                   <div className="space-y-4">
-                    <div className="h-1 w-24 bg-primary rounded-full"></div>
-                    <h3 className="text-3xl font-black text-white italic tracking-tighter">DATA-DRIVEN CORE</h3>
+                    <div className="flex items-center gap-3 pb-4 border-b border-slate-100">
+                      <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center">
+                        <Zap className="h-6 w-6 text-white" />
+                      </div>
+                      <div>
+                        <div className="text-sm font-semibold text-slate-900">AI Script Generator</div>
+                        <div className="text-xs text-slate-500">Powered by GPT-4</div>
+                      </div>
+                    </div>
+                    <div className="space-y-3">
+                      <div className="h-3 bg-slate-100 rounded-full w-full"></div>
+                      <div className="h-3 bg-slate-100 rounded-full w-5/6"></div>
+                      <div className="h-3 bg-slate-100 rounded-full w-4/6"></div>
+                      <div className="h-20 bg-gradient-to-br from-emerald-50 to-teal-50 rounded-xl border border-emerald-200/50 flex items-center justify-center">
+                        <Sparkles className="h-8 w-8 text-emerald-600 animate-pulse" />
+                      </div>
+                      <div className="h-3 bg-slate-100 rounded-full w-full"></div>
+                      <div className="h-3 bg-slate-100 rounded-full w-3/4"></div>
+                    </div>
                   </div>
-                  <div className="text-[10px] font-black tracking-[0.4em] text-white/30 uppercase border-l border-white/10 pl-8">
-                    Latency: 12ms <br /> Precision: 99.9%
+
+                  {/* Floating Elements */}
+                  <div className="absolute -top-4 -right-4 h-20 w-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl shadow-xl flex items-center justify-center animate-float">
+                    <TrendingUp className="h-10 w-10 text-white" />
+                  </div>
+                  <div className="absolute -bottom-4 -left-4 h-16 w-16 bg-gradient-to-br from-orange-500 to-pink-600 rounded-2xl shadow-xl flex items-center justify-center animate-float delay-200">
+                    <Target className="h-8 w-8 text-white" />
                   </div>
                 </div>
               </div>
@@ -113,124 +143,310 @@ export default function LandingPage() {
           </div>
         </section>
 
+        {/* TRUST & SOCIAL PROOF */}
+        <section className="py-12 px-6 bg-white border-y border-slate-100">
+          <div className="max-w-7xl mx-auto">
+            <p className="text-center text-sm font-medium text-slate-500 mb-8">Trusted by leading creators and brands</p>
+            <div className="flex flex-wrap justify-center items-center gap-12 opacity-40">
+              {[Users, Award, BarChart3, Globe, Sparkles, Target].map((Icon, i) => (
+                <Icon key={i} className="h-8 w-8 text-slate-400" />
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* FEATURES SECTION */}
-        <section id="features" className="py-32 px-6 bg-black/40">
-          <div className="max-w-7xl mx-auto space-y-24">
-            <div className="max-w-2xl">
-              <h2 className="text-5xl md:text-6xl font-black text-white tracking-tighter uppercase italic leading-none mb-8">
-                Engineered for <br /> <span className="text-primary">Performance.</span>
+        <section id="features" className="py-24 px-6 bg-gradient-to-b from-white to-slate-50">
+          <div className="max-w-7xl mx-auto">
+            {/* Section Header */}
+            <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
+              <h2 className="text-4xl md:text-5xl font-bold text-slate-900 tracking-tight">
+                Everything you need to{' '}
+                <span className="bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+                  go viral
+                </span>
               </h2>
-              <p className="text-white/40 text-lg font-medium leading-relaxed">
-                Every component of ScriptGo is built to eliminate friction and maximize output. High-fidelity frameworks meet neural-speed processing.
+              <p className="text-lg text-slate-600 leading-relaxed">
+                Powerful features designed to help you create high-performing content faster than ever before.
               </p>
             </div>
 
-            <div className="grid md:grid-cols-3 gap-8">
+            {/* Features Grid */}
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {[
                 {
                   icon: Zap,
-                  title: "Neural Engine",
-                  desc: "Generate production-ready scripts in milliseconds using our low-latency AI core."
+                  title: 'AI-Powered Generation',
+                  description: 'Generate production-ready scripts in seconds using advanced GPT-4 technology.',
+                  color: 'from-emerald-500 to-teal-600'
                 },
                 {
-                  icon: ShieldCheck,
-                  title: "Verified Loop",
-                  desc: "Every script is cross-validated against current algorithmic high-performers for guaranteed impact."
+                  icon: Target,
+                  title: 'Data-Driven Insights',
+                  description: 'Every script is optimized using proven frameworks like AIDA, PAS, and Hook-Story-CTA.',
+                  color: 'from-blue-500 to-cyan-600'
+                },
+                {
+                  icon: TrendingUp,
+                  title: 'Platform Optimization',
+                  description: 'Content tailored specifically for LinkedIn, YouTube, TikTok, and more.',
+                  color: 'from-purple-500 to-pink-600'
                 },
                 {
                   icon: Sparkles,
-                  title: "Universal Export",
-                  desc: "Optimized formats for LinkedIn, X, YouTube, and TikTok integrated natively into your workflow."
+                  title: 'Multi-Language Support',
+                  description: 'Create content in English, Tamil, Hindi, Spanish, and more languages.',
+                  color: 'from-orange-500 to-red-600'
+                },
+                {
+                  icon: CheckCircle2,
+                  title: 'Instant Export',
+                  description: 'Copy, download, or share your scripts with a single click.',
+                  color: 'from-green-500 to-emerald-600'
+                },
+                {
+                  icon: BarChart3,
+                  title: 'Performance Tracking',
+                  description: 'Save and organize all your scripts in one centralized dashboard.',
+                  color: 'from-indigo-500 to-blue-600'
                 }
               ].map((feature, i) => (
-                <div key={i} className="group p-10 rounded-[2.5rem] bg-[#0A1A12]/50 border border-white/5 hover:border-primary/30 transition-all hover:-translate-y-2">
-                  <div className="h-14 w-14 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
-                    <feature.icon className="h-7 w-7 text-primary" />
+                <div
+                  key={i}
+                  className="group p-8 rounded-2xl bg-white border border-slate-200 hover:border-slate-300 hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+                >
+                  <div className={`h-14 w-14 rounded-xl bg-gradient-to-br ${feature.color} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg`}>
+                    <feature.icon className="h-7 w-7 text-white" />
                   </div>
-                  <h3 className="text-2xl font-black text-white tracking-tight uppercase italic mb-4">{feature.title}</h3>
-                  <p className="text-white/40 font-medium leading-relaxed text-sm">
-                    {feature.desc}
-                  </p>
+                  <h3 className="text-xl font-bold text-slate-900 mb-3">{feature.title}</h3>
+                  <p className="text-slate-600 leading-relaxed">{feature.description}</p>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* SOCIAL PROOF MARQUEE */}
-        <section className="py-20 border-y border-white/5 bg-[#080B12] overflow-hidden">
-          <div className="flex whitespace-nowrap animate-marquee">
-            {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="flex items-center gap-12 px-12">
-                <span className="text-4xl font-black text-white/10 uppercase tracking-[0.2em] italic">Used by Legends</span>
-                <Star className="h-6 w-6 text-primary fill-current" />
-                <span className="text-4xl font-black text-white/10 uppercase tracking-[0.2em] italic">Top 1% Creators</span>
-                <Zap className="h-6 w-6 text-primary" />
+        {/* PRODUCT SHOWCASE */}
+        <section id="how-it-works" className="py-24 px-6 bg-white">
+          <div className="max-w-7xl mx-auto">
+            <div className="grid lg:grid-cols-2 gap-16 items-center">
+              {/* Left - Visual */}
+              <div className="relative order-2 lg:order-1">
+                <div className="rounded-2xl overflow-hidden shadow-2xl border border-slate-200 bg-gradient-to-br from-slate-50 to-white p-12">
+                  <div className="space-y-6">
+                    <div className="flex items-center gap-4">
+                      <div className="h-3 w-3 rounded-full bg-red-500"></div>
+                      <div className="h-3 w-3 rounded-full bg-yellow-500"></div>
+                      <div className="h-3 w-3 rounded-full bg-green-500"></div>
+                    </div>
+                    <div className="space-y-4 bg-white rounded-xl p-6 border border-slate-200">
+                      <div className="flex items-center gap-3">
+                        <div className="h-8 w-8 rounded-lg bg-emerald-100 flex items-center justify-center">
+                          <Sparkles className="h-4 w-4 text-emerald-600" />
+                        </div>
+                        <span className="text-sm font-semibold text-slate-700">Generate Script</span>
+                      </div>
+                      <div className="space-y-2">
+                        <div className="h-2 bg-slate-100 rounded w-full"></div>
+                        <div className="h-2 bg-slate-100 rounded w-4/5"></div>
+                        <div className="h-2 bg-slate-100 rounded w-3/5"></div>
+                      </div>
+                      <div className="h-24 bg-gradient-to-br from-emerald-50 to-teal-50 rounded-lg border-2 border-dashed border-emerald-300 flex items-center justify-center">
+                        <Zap className="h-10 w-10 text-emerald-600 animate-pulse" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-            ))}
+
+              {/* Right - Content */}
+              <div className="space-y-6 order-1 lg:order-2">
+                <h2 className="text-4xl md:text-5xl font-bold text-slate-900 tracking-tight leading-tight">
+                  Simple, powerful, and{' '}
+                  <span className="bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+                    lightning fast
+                  </span>
+                </h2>
+                <p className="text-lg text-slate-600 leading-relaxed">
+                  ScriptGo eliminates the guesswork from content creation. Our AI analyzes top-performing content and generates scripts proven to drive engagement.
+                </p>
+
+                <div className="space-y-4 pt-4">
+                  {[
+                    'Choose your platform and content type',
+                    'Select a proven marketing framework',
+                    'Generate and customize your script',
+                    'Export and publish in seconds'
+                  ].map((step, i) => (
+                    <div key={i} className="flex items-start gap-4">
+                      <div className="h-6 w-6 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <CheckCircle2 className="h-4 w-4 text-white" />
+                      </div>
+                      <span className="text-slate-700 font-medium">{step}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
-        {/* CTA SECTION */}
-        <section className="py-40 px-6 text-center">
-          <div className="max-w-4xl mx-auto p-20 rounded-[4rem] bg-gradient-to-b from-primary/20 to-transparent border border-primary/20 relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary to-transparent"></div>
-
-            <div className="relative z-10 space-y-10">
-              <h2 className="text-6xl md:text-8xl font-black text-white tracking-tighter uppercase italic leading-[0.9]">
-                Claim your <br /> <span className="text-primary">Edge.</span>
+        {/* BENEFITS / VALUE SECTION */}
+        <section className="py-24 px-6 bg-gradient-to-b from-slate-50 to-white">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
+              <h2 className="text-4xl md:text-5xl font-bold text-slate-900 tracking-tight">
+                Why creators choose{' '}
+                <span className="bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+                  ScriptGo
+                </span>
               </h2>
-              <p className="max-w-lg mx-auto text-xl text-white/40 font-medium leading-relaxed">
-                Join the network of 5,000+ creators scaling their influence with high-fidelity AI.
+              <p className="text-lg text-slate-600 leading-relaxed">
+                Stop wasting hours on content creation. Start publishing high-quality scripts that convert.
               </p>
-              <div className="flex justify-center">
-                <Link
-                  href="/login?tab=signup"
-                  className="h-20 px-16 bg-primary text-white rounded-[2rem] text-sm font-black uppercase tracking-[0.5em] flex items-center justify-center hover:bg-primary/80 transition-all hover:shadow-[0_0_50px_rgba(16,185,129,0.5)] active:scale-95 shadow-2xl"
-                >
-                  Join Protocol
-                </Link>
-              </div>
             </div>
+
+            <div className="grid md:grid-cols-3 gap-8">
+              {[
+                {
+                  stat: '10x',
+                  label: 'Faster Content Creation',
+                  description: 'Generate scripts in seconds instead of hours'
+                },
+                {
+                  stat: '5,000+',
+                  label: 'Active Creators',
+                  description: 'Join thousands of successful content creators'
+                },
+                {
+                  stat: '99.9%',
+                  label: 'Satisfaction Rate',
+                  description: 'Loved by creators across all platforms'
+                }
+              ].map((item, i) => (
+                <div key={i} className="text-center p-8 rounded-2xl bg-white border border-slate-200 hover:shadow-xl transition-all">
+                  <div className="text-5xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent mb-2">
+                    {item.stat}
+                  </div>
+                  <div className="text-lg font-semibold text-slate-900 mb-2">{item.label}</div>
+                  <div className="text-sm text-slate-600">{item.description}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* FINAL CTA */}
+        <section id="pricing" className="py-24 px-6 bg-gradient-to-br from-emerald-500 via-teal-600 to-cyan-600 relative overflow-hidden">
+          {/* Background Pattern */}
+          <div className="absolute inset-0 opacity-10">
+            <div className="absolute top-0 left-0 w-full h-full bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMSI+PHBhdGggZD0iTTM2IDE2YzAtMi4yMSAxLjc5LTQgNC00czQgMS43OSA0IDQtMS43OSA0LTQgNC00LTEuNzktNC00em0wIDI0YzAtMi4yMSAxLjc5LTQgNC00czQgMS43OSA0IDQtMS43OSA0LTQgNC00LTEuNzktNC00ek0xMiAxNmMwLTIuMjEgMS43OS00IDQtNHM0IDEuNzkgNCA0LTEuNzkgNC00IDQtNC0xLjc5LTQtNHptMCAyNGMwLTIuMjEgMS43OS00IDQtNHM0IDEuNzkgNCA0LTEuNzkgNC00IDQtNC0xLjc5LTQtNHoiLz48L2c+PC9nPjwvc3ZnPg==')]"></div>
+          </div>
+
+          <div className="max-w-4xl mx-auto text-center relative z-10 space-y-8">
+            <h2 className="text-5xl md:text-6xl font-bold text-white tracking-tight leading-tight">
+              Start creating viral content today
+            </h2>
+            <p className="text-xl text-white/90 leading-relaxed max-w-2xl mx-auto">
+              Join thousands of creators who are already scaling their influence with AI-powered scripts.
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
+              <Link
+                href="/login?tab=signup"
+                className="h-16 px-10 bg-white text-emerald-600 rounded-xl text-lg font-bold flex items-center justify-center gap-2 hover:shadow-2xl hover:scale-105 transition-all group"
+              >
+                Get Started Free
+                <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+              </Link>
+              <Link
+                href="/login"
+                className="h-16 px-10 bg-white/10 backdrop-blur border-2 border-white/30 text-white rounded-xl text-lg font-bold flex items-center justify-center hover:bg-white/20 transition-all"
+              >
+                Sign In
+              </Link>
+            </div>
+
+            <p className="text-sm text-white/70 pt-4">
+              No credit card required • Free forever • Cancel anytime
+            </p>
           </div>
         </section>
       </main>
 
-      {/* STOA FOOTER */}
-      <footer className="py-20 px-6 border-t border-white/5 bg-black/20">
-        <div className="max-w-7xl mx-auto flex flex-col md:row justify-between items-center gap-12">
-          <div className="flex items-center gap-3">
-            <div className="h-8 w-8 bg-primary rounded-lg flex items-center justify-center">
-              <Rocket className="h-5 w-5 text-white" />
-            </div>
-            <span className="font-outfit font-bold text-xl tracking-tighter text-white">ScriptGo</span>
-          </div>
-
-          <div className="flex gap-12">
-            {['Twitter', 'Discord', 'Updates'].map((item) => (
-              <Link key={item} href="#" className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20 hover:text-white transition-colors">
-                {item}
+      {/* FOOTER */}
+      <footer className="py-16 px-6 bg-slate-900 border-t border-slate-800">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid md:grid-cols-4 gap-12 mb-12">
+            {/* Brand */}
+            <div className="space-y-4">
+              <Link href="/" className="flex items-center gap-3">
+                <div className="h-10 w-10 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center">
+                  <Rocket className="h-5 w-5 text-white" />
+                </div>
+                <span className="font-outfit font-bold text-xl text-white">ScriptGo</span>
               </Link>
+              <p className="text-sm text-slate-400 leading-relaxed">
+                AI-powered content generation for modern creators.
+              </p>
+            </div>
+
+            {/* Links */}
+            {[
+              {
+                title: 'Product',
+                links: ['Features', 'Pricing', 'FAQ', 'Roadmap']
+              },
+              {
+                title: 'Company',
+                links: ['About', 'Blog', 'Careers', 'Contact']
+              },
+              {
+                title: 'Legal',
+                links: ['Privacy', 'Terms', 'Security', 'Cookies']
+              }
+            ].map((section, i) => (
+              <div key={i} className="space-y-4">
+                <h3 className="text-sm font-semibold text-white uppercase tracking-wider">{section.title}</h3>
+                <ul className="space-y-3">
+                  {section.links.map((link) => (
+                    <li key={link}>
+                      <Link href="#" className="text-sm text-slate-400 hover:text-white transition-colors">
+                        {link}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             ))}
           </div>
 
-          <p className="text-[10px] uppercase tracking-[0.2em] text-white/20">© 2026 ScriptGo Protocol v3 // All Rights Reserved</p>
+          <div className="pt-8 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center gap-4">
+            <p className="text-sm text-slate-400">© 2026 ScriptGo. All rights reserved.</p>
+            <div className="flex gap-6">
+              {['Twitter', 'LinkedIn', 'GitHub'].map((social) => (
+                <Link key={social} href="#" className="text-sm text-slate-400 hover:text-white transition-colors">
+                  {social}
+                </Link>
+              ))}
+            </div>
+          </div>
         </div>
       </footer>
 
       <style jsx global>{`
-                .glow-text {
-                    text-shadow: 0 0 40px rgba(16, 185, 129, 0.6);
-                }
-                @keyframes marquee {
-                    from { transform: translateX(0); }
-                    to { transform: translateX(-50%); }
-                }
-                .animate-marquee {
-                    animation: marquee 30s linear infinite;
-                    width: max-content;
-                }
-            `}</style>
+        @keyframes float {
+          0%, 100% {
+            transform: translateY(0px);
+          }
+          50% {
+            transform: translateY(-20px);
+          }
+        }
+        .animate-float {
+          animation: float 6s ease-in-out infinite;
+        }
+      `}</style>
     </div>
   )
 }
