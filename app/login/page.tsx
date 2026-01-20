@@ -83,7 +83,7 @@ function LoginContent() {
                     return
                 }
 
-                const { error } = await supabase.auth.signUp({
+                const { data, error } = await supabase.auth.signUp({
                     email,
                     password,
                     options: {
@@ -92,9 +92,16 @@ function LoginContent() {
                         }
                     }
                 })
+
                 if (error) {
                     setError(error.message)
+                } else if (!data.session) {
+                    // User created but session missing -> Email confirmation likely required
+                    setError(null)
+                    alert('Account created! Please check your email to confirm your account before signing in.')
+                    setIsLogin(true) // Switch to login tab
                 } else {
+                    // Success with session -> Redirect
                     router.push('/dashboard')
                     router.refresh()
                 }
