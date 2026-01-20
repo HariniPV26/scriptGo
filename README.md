@@ -4,8 +4,8 @@ The high-fidelity scripting environment for elite creators.
 
 ## 🚀 Deployment Status
 
-**Active Site:** Vercel (Building...)
-**Live URL:** [Pending Deployment URL]
+**Active Site:** Vercel (Production)
+**Live URL:** [https://scriptgo-oqazxq0ep-harinis-projects-9f628a7d.vercel.app/](https://scriptgo-oqazxq0ep-harinis-projects-9f628a7d.vercel.app/)
 **Repository:** [https://github.com/HariniPV26/scriptGo](https://github.com/HariniPV26/scriptGo)
 
 ### 🛠 Tech Stack

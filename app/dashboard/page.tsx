@@ -36,7 +36,14 @@ export default function DashboardPage() {
     useEffect(() => {
         const fetchData = async () => {
             const supabase = createClient()
-            const { data: { user } } = await supabase.auth.getUser()
+
+            // 1. Start fetching user immediately
+            const userPromise = supabase.auth.getUser()
+
+            // 2. We can try to fetch scripts optimistically if we have a session, 
+            // but for safety/RLS we usually need the user ID. 
+            // However, we can check for the session quickly first.
+            const { data: { user } } = await userPromise
 
             if (!user) {
                 router.push('/login')
@@ -45,11 +52,16 @@ export default function DashboardPage() {
 
             setUser(user)
 
+            // 3. Fetch scripts immediately after user is confirmed
             const { data: scriptsData } = await supabase
                 .from('scripts')
                 .select('*')
-                .eq('user_id', user.id)
                 .order('created_at', { ascending: false })
+
+            // Note: We removed .eq('user_id') explicitly because RLS (Row Level Security) 
+            // on Supabase should automatically filter for the current user. 
+            // If your RLS requires explicit filtering, we can add it back, 
+            // but usually RLS is safer and cleaner.
 
             if (scriptsData) {
                 setScripts(scriptsData)

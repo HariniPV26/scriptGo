@@ -12,10 +12,13 @@ function LoginContent() {
     const [isLogin, setIsLogin] = useState(true)
 
     useEffect(() => {
+        // Prefetch the dashboard for instant navigation
+        router.prefetch('/dashboard')
+
         if (searchParams.get('tab') === 'signup') {
             setIsLogin(false)
         }
-    }, [searchParams])
+    }, [searchParams, router])
 
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
@@ -200,8 +203,8 @@ function LoginContent() {
                                 type="button"
                                 onClick={() => setIsLogin(true)}
                                 className={`flex-1 py-3 px-6 rounded-xl text-sm font-semibold transition-all ${isLogin
-                                        ? 'bg-white text-slate-900 shadow-md'
-                                        : 'text-slate-600 hover:text-slate-900'
+                                    ? 'bg-white text-slate-900 shadow-md'
+                                    : 'text-slate-600 hover:text-slate-900'
                                     }`}
                             >
                                 Sign In
@@ -210,8 +213,8 @@ function LoginContent() {
                                 type="button"
                                 onClick={() => setIsLogin(false)}
                                 className={`flex-1 py-3 px-6 rounded-xl text-sm font-semibold transition-all ${!isLogin
-                                        ? 'bg-white text-slate-900 shadow-md'
-                                        : 'text-slate-600 hover:text-slate-900'
+                                    ? 'bg-white text-slate-900 shadow-md'
+                                    : 'text-slate-600 hover:text-slate-900'
                                     }`}
                             >
                                 Sign Up
