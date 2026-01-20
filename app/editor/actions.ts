@@ -124,7 +124,7 @@ export async function generateScript(topic: string, tone: string, platform: stri
   }
 }
 
-export async function generateVisuals(script: string, platform: string) {
+export async function generateVisuals(script: string, platform: string, topic: string, tone: string) {
   if (!process.env.OPENAI_API_KEY) {
     return { text: 'OpenAI API Key is missing. Please check your configuration.' };
   }
@@ -132,35 +132,38 @@ export async function generateVisuals(script: string, platform: string) {
   const prompt = `
     SYSTEM: You are a Professional Video Director and Visual Storyboard Artist.
     PLATFORM: ${platform}
+    TOPIC: ${topic}
+    TONE: ${tone}
     SCRIPT: 
     ${script}
     
-    GOAL: Create a detailed visual storyboard / shot list for this script.
+    GOAL: Create a detailed visual storyboard / shot list.
     
     GUIDELINES:
     1. For each logical section of the script, describe EXACTLY what should be shown on screen.
-    2. Include details about lighting, camera angles, color palette, and any text overlays.
-    3. Make sure the visuals align with the platform best practices (e.g., fast cuts for TikTok, cinematic for YouTube).
-    4. If there are specific transitions, mention them.
+    2. Create a high-quality "Image Generation Prompt" for each shot.
     
-    FORMAT:
-    - [Shot 1]: Visual Description (Angle, Lighting, Action)
-    - [Shot 2]: ...
+    FORMAT: Return a JSON object with a "shots" key containing an array of shot objects.
+    Each shot object must have:
+    - "shot": e.g., "Shot 1"
+    - "description": text description of the scene
+    - "visualPrompt": A descriptive prompt for an AI image generator to create this visual.
     
-    Return ONLY the visual plan in a clean, professional format.
+    IMPORTANT: Return ONLY valid JSON. Content must reflect topic "${topic}" and tone "${tone}".
   `
 
   try {
     const response = await openai.chat.completions.create({
       model: 'gpt-4o-mini',
       messages: [{ role: 'user', content: prompt }],
+      response_format: { type: "json_object" }
     })
 
-    const content = response.choices[0].message.content || 'No visuals generated.'
+    const content = response.choices[0].message.content || '{"shots": []}'
     return { text: content }
   } catch (error: any) {
     console.error('OpenAI Visuals Error:', error)
     const errorMessage = error.message || 'Error generating visuals.'
-    return { text: `Error: ${errorMessage}. Please check your OpenAI API key and credits.` }
+    return { text: JSON.stringify({ error: errorMessage }) }
   }
 }
