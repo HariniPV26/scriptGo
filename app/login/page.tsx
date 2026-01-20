@@ -418,9 +418,12 @@ function LoginContent() {
                     </div>
 
                     {/* Security Notice */}
-                    <div className="flex items-center justify-center gap-2 text-sm text-slate-500">
-                        <Shield className="h-4 w-4" />
-                        <span>Your data is secure and encrypted</span>
+                    <div className="flex flex-col items-center justify-center gap-2 text-sm text-slate-500">
+                        <div className="flex items-center gap-2">
+                            <Shield className="h-4 w-4" />
+                            <span>Your data is secure and encrypted</span>
+                        </div>
+                        <span className="text-[10px] text-slate-300 mt-2 opacity-50">v1.1.0-clean-auth</span>
                     </div>
                 </div>
             </div>
