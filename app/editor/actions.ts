@@ -1,23 +1,19 @@
-'use server'
+import { GoogleGenerativeAI } from '@google/generative-ai'
 
-import OpenAI from 'openai'
-
-// Initialize OpenAI
-function getOpenAIClient() {
-  const apiKey = process.env.OPENAI_API_KEY;
+// Initialize Gemini
+function getGeminiClient() {
+  const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
-    console.error('CRITICAL: OPENAI_API_KEY is undefined in environment');
+    console.error('CRITICAL: GEMINI_API_KEY is undefined in environment');
   }
-  return new OpenAI({
-    apiKey: apiKey,
-  });
+  return new GoogleGenerativeAI(apiKey || '');
 }
 
-const openai = getOpenAIClient();
+const genAI = getGeminiClient();
 
 export async function generateScript(topic: string, tone: string, platform: string, language: string = 'English', framework: string = 'None') {
-  if (!process.env.OPENAI_API_KEY) {
-    return { text: 'OpenAI API Key is missing. Please check your configuration.' };
+  if (!process.env.GEMINI_API_KEY) {
+    return { text: 'Gemini API Key is missing. Please check your configuration.' };
   }
 
   let specificInstructions = ''
@@ -128,23 +124,20 @@ export async function generateScript(topic: string, tone: string, platform: stri
   `
 
   try {
-    const response = await openai.chat.completions.create({
-      model: 'gpt-4o',
-      messages: [{ role: 'user', content: prompt }],
-    })
-
-    const content = response.choices[0].message.content || 'No script generated.'
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
+    const result = await model.generateContent(prompt);
+    const content = result.response.text() || 'No script generated.'
     return { text: content }
   } catch (error: any) {
-    console.error('OpenAI Generation Error:', error)
+    console.error('Gemini Generation Error:', error)
     const errorMessage = error.message || 'Error generating script.'
-    return { text: `Error: ${errorMessage}. Please check your OpenAI API key and credits.` }
+    return { text: `Error: ${errorMessage}. Please check your Gemini API key and quota.` }
   }
 }
 
 export async function generateVisuals(script: string, platform: string, topic: string, tone: string) {
-  if (!process.env.OPENAI_API_KEY) {
-    return { text: 'OpenAI API Key is missing. Please check your configuration.' };
+  if (!process.env.GEMINI_API_KEY) {
+    return { text: 'Gemini API Key is missing. Please check your configuration.' };
   }
 
   const prompt = `
@@ -155,7 +148,7 @@ export async function generateVisuals(script: string, platform: string, topic: s
     SCRIPT: 
     ${script}
     
-    TASK: Generate a visual storyboard for this topic.
+    TASK: Generate a visual storyboard for this topic. Return only JSON.
     
     CRITICAL STYLE INSTRUCTIONS:
     1. STYLE: Use a "Vibrant 3D Animated Movie Style" (Disney/Pixar aesthetic).
@@ -171,19 +164,19 @@ export async function generateVisuals(script: string, platform: string, topic: s
     2. "thumbnailPrompt": One main cinematic hero prompt.
     
     IMPORTANT: Keep prompts descriptive (30-50 words). No technical jargon. No placeholders.
+    Return ONLY valid JSON.
   `
 
   try {
-    const response = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
-      messages: [{ role: 'user', content: prompt }],
-      response_format: { type: "json_object" }
-    })
-
-    const content = response.choices[0].message.content || '{"visuals": []}'
+    const model = genAI.getGenerativeModel({
+      model: "gemini-1.5-pro",
+      generationConfig: { responseMimeType: "application/json" }
+    });
+    const result = await model.generateContent(prompt);
+    const content = result.response.text() || '{"visuals": []}'
     return { text: content }
   } catch (error: any) {
-    console.error('OpenAI Visuals Error:', error)
+    console.error('Gemini Visuals Error:', error)
     return { text: JSON.stringify({ error: 'Failed' }) }
   }
 }
