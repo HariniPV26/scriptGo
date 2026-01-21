@@ -13,7 +13,7 @@ export async function sendWelcomeEmail(email: string, fullName?: string) {
 
     try {
         const { data, error } = await resend.emails.send({
-            from: 'ScriptGo <onboarding@resend.dev>',
+            from: 'onboarding@resend.dev',
             to: [email],
             subject: 'Welcome to ScriptGo! 🚀',
             html: `
@@ -49,13 +49,13 @@ export async function sendWelcomeEmail(email: string, fullName?: string) {
 
         if (error) {
             console.error('Resend Error:', error)
-            return { success: false, error }
+            return { success: false, message: error.message || 'Resend error' }
         }
 
         return { success: true, data }
-    } catch (error) {
+    } catch (error: any) {
         console.error('Failed to send welcome email:', error)
-        return { success: false, error }
+        return { success: false, message: error.message || 'Unexpected error' }
     }
 }
 
@@ -69,7 +69,7 @@ export async function sendPasswordResetEmail(email: string, resetLink: string) {
 
     try {
         const { data, error } = await resend.emails.send({
-            from: 'ScriptGo <auth@resend.dev>',
+            from: 'onboarding@resend.dev',
             to: [email],
             subject: 'Reset your ScriptGo password',
             html: `
@@ -92,10 +92,10 @@ export async function sendPasswordResetEmail(email: string, resetLink: string) {
             `,
         })
 
-        if (error) return { success: false, error }
+        if (error) return { success: false, message: error.message }
         return { success: true, data }
-    } catch (error) {
-        return { success: false, error }
+    } catch (error: any) {
+        return { success: false, message: error.message }
     }
 }
 
@@ -108,8 +108,9 @@ export async function sendScriptEmail(email: string, scriptTitle: string, script
     }
 
     try {
+        console.log(`Attempting to send script email to: ${email}`);
         const { data, error } = await resend.emails.send({
-            from: 'ScriptGo <studio@resend.dev>',
+            from: 'onboarding@resend.dev',
             to: [email],
             subject: `Ready for Production: ${scriptTitle}`,
             html: `
@@ -138,9 +139,16 @@ export async function sendScriptEmail(email: string, scriptTitle: string, script
             `,
         })
 
-        if (error) return { success: false, error }
-        return { success: true, data }
-    } catch (error) {
-        return { success: false, error }
+        if (error) {
+            console.error('Resend Error Details:', error);
+            // Resend errors often have a message property, but we'll be safe
+            return { success: false, message: error.message || JSON.stringify(error) || 'Resend error' };
+        }
+
+        console.log('Script email sent successfully:', data);
+        return { success: true, data };
+    } catch (error: any) {
+        console.error('Crash in sendScriptEmail:', error);
+        return { success: false, message: error.message || 'Unexpected server error' };
     }
 }
