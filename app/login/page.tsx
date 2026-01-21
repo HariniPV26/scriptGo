@@ -366,6 +366,47 @@ function LoginContent() {
                                     )}
                                 </div>
 
+                                {/* Confirm Password - Signup Only */}
+                                {!isLogin && (
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-black text-white/40 uppercase tracking-widest ml-1">Confirm Password</label>
+                                        <div className="relative group">
+                                            <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-white/20 group-focus-within:text-emerald-400 transition-colors" />
+                                            <input
+                                                type={showConfirmPassword ? 'text' : 'password'}
+                                                required={!isLogin}
+                                                value={confirmPassword}
+                                                onChange={(e) => setConfirmPassword(e.target.value)}
+                                                className="h-14 w-full pl-12 pr-12 bg-white/[0.03] border border-white/5 rounded-2xl text-white placeholder:text-white/20 focus:border-emerald-500/30 focus:bg-white/[0.05] outline-none transition-all text-sm font-medium"
+                                                placeholder="••••••••"
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                                className="absolute right-4 top-1/2 -translate-y-1/2 text-white/20 hover:text-white transition-colors"
+                                            >
+                                                {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Terms & Conditions - Signup Only */}
+                                {!isLogin && (
+                                    <div className="flex items-start gap-3 px-1">
+                                        <button
+                                            type="button"
+                                            onClick={() => setAgreedToTerms(!agreedToTerms)}
+                                            className={`mt-0.5 h-5 w-5 rounded-lg border transition-all flex items-center justify-center ${agreedToTerms ? 'bg-emerald-500 border-emerald-500' : 'border-white/10 bg-white/5'}`}
+                                        >
+                                            {agreedToTerms && <CheckCircle2 className="h-3 w-3 text-white" />}
+                                        </button>
+                                        <label className="text-xs text-white/40 font-medium leading-relaxed">
+                                            I agree to the <Link href="#" className="text-emerald-400 hover:text-emerald-300">Terms of Service</Link> and <Link href="#" className="text-emerald-400 hover:text-emerald-300">Privacy Policy</Link>
+                                        </label>
+                                    </div>
+                                )}
+
                                 {/* Submit Button */}
                                 <button
                                     type="submit"
