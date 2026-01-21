@@ -101,8 +101,9 @@ export async function generateScript(topic: string, tone: string, platform: stri
     - **Framework:** ${frameworkInstruction}
 
     ### STYLE GUIDELINES (CRITICAL)
-    1. NO TEXTBOOK LANGUAGE: Never use formal, written-style language. Use the conversational, spoken dialect used by real people in that region.
-       - If Language is Tamil/Hindi/Telugu: Use "Tanglish" or "Hinglish." Mix English words for technical terms (e.g., use "Marketing" not "Santhai-paduthal", use "Growth" not "Varchi").
+    1. NO TEXTBOOK LANGUAGE: Never use formal, written-style language. Use the super-casual, "friend-to-friend" spoken dialect.
+       - If Language is Tamil/Hindi/Telugu: Use "Tanglish" or "Hinglish." Heavy mix of English words is REQUIRED. Talk like local friends chatting over coffee. 
+       - Examples for Tamil: Use "Machan" or "Guys", use "Update", "Growth", "Content" instead of pure Tamil words. Sentences should be a natural mix (e.g., "Indha strategy amazing-a work aagum machan!").
     2. NO FLUFF: Do not use words like "In today's digital world" or "Let's dive in." Start immediately with value.
     3. NO META-LABELS: Do not output headers like "Hook:", "Body:", or "Conclusion:". Just write the script/content directly.
 
