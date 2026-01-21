@@ -8,9 +8,14 @@ const fromEmail = process.env.SMTP_FROM || 'ScriptGo Studio <onboarding@resend.d
  * Sends a welcome email to a new user.
  */
 export async function sendWelcomeEmail(email: string, fullName?: string) {
-    if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
-        console.log('Skipping welcome email: SMTP credentials not configured.')
-        return { success: false, message: 'SMTP credentials not configured' }
+    const missing = [];
+    if (!process.env.SMTP_USER) missing.push('SMTP_USER');
+    if (!process.env.SMTP_PASS) missing.push('SMTP_PASS');
+
+    if (missing.length > 0) {
+        const msg = `SMTP credentials missing on server: ${missing.join(', ')}`;
+        console.error(msg);
+        return { success: false, message: msg }
     }
 
     try {
@@ -60,8 +65,12 @@ export async function sendWelcomeEmail(email: string, fullName?: string) {
  * Sends a password reset email.
  */
 export async function sendPasswordResetEmail(email: string, resetLink: string) {
-    if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
-        return { success: false, message: 'SMTP credentials not configured' }
+    const missing = [];
+    if (!process.env.SMTP_USER) missing.push('SMTP_USER');
+    if (!process.env.SMTP_PASS) missing.push('SMTP_PASS');
+
+    if (missing.length > 0) {
+        return { success: false, message: `SMTP credentials missing: ${missing.join(', ')}` }
     }
 
     try {
@@ -100,8 +109,12 @@ export async function sendPasswordResetEmail(email: string, resetLink: string) {
  * Sends a generated script to the user's email.
  */
 export async function sendScriptEmail(email: string, scriptTitle: string, scriptContent: string) {
-    if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
-        return { success: false, message: 'SMTP credentials not configured' }
+    const missing = [];
+    if (!process.env.SMTP_USER) missing.push('SMTP_USER');
+    if (!process.env.SMTP_PASS) missing.push('SMTP_PASS');
+
+    if (missing.length > 0) {
+        return { success: false, message: `SMTP credentials missing: ${missing.join(', ')}` }
     }
 
     try {
