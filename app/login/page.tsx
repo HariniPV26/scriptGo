@@ -101,11 +101,11 @@ function LoginContent() {
                     alert('Account created! Please check your email to confirm your account.')
                     setIsLogin(true)
 
-                    // Fire-and-forget welcome email in the background
-                    await sendWelcomeEmail(email, fullName)
+                    // Fire-and-forget welcome email in the background without blocking
+                    sendWelcomeEmail(email, fullName).catch(e => console.error("Welcome email failed:", e))
                 } else {
                     // Success with session -> Redirect
-                    await sendWelcomeEmail(email, fullName)
+                    sendWelcomeEmail(email, fullName).catch(e => console.error("Welcome email failed:", e))
                     router.push('/dashboard')
                     router.refresh()
                 }
