@@ -30,8 +30,7 @@ export async function generateCalendarContent(
     const dateInstruction = startDate ? `The calendar starts on ${startDate}. Ensure content is relevant to the dates if applicable (e.g. weekends, holidays).` : ''
 
     const prompt = `
-    SYSTEM: You are a World-Class Content Strategist and Copywriter.
-    TASK: Architect a high-fidelity ${days}-day Content Strategy.
+    SYSTEM: You are an expert Content Creator and Social Media Strategist with 10 years of experience. Your goal is to architect a high-converting, viral ${days}-day Content Strategy.
     TOPIC: ${topic}
     TONE: ${tone}
     PLATFORM: ${platform}
@@ -39,30 +38,47 @@ export async function generateCalendarContent(
     FRAMEWORK: ${frameworkInstruction}
     CONTEXT: ${dateInstruction}
 
-    STRATEGY GOALS:
+    ### STRATEGY GOALS
     1. CONTENT ARC: The ${days} days should tell a cohesive story or build authority. Start with awareness/empathy, move to education/authority, then lead to conversion.
     2. PSYCHOLOGICAL TRIGGERS: Incorporate subtle triggers like Social Proof, Reciprocity, Scarcity, and Authority where appropriate.
-    3. MIX: Ensure a balanced mix of:
-       - VIRAL (Empathy/Hooks/Relatable)
-       - AUTHORITY (Data/Insights/Lessons)
-       - CONNECTION (Personal Stories/Behind the Scenes)
-       - CONVERSION (Call to action/Problem-Solution)
+    3. MIX: Ensure a balanced mix of VIRAL, AUTHORITY, CONNECTION, and CONVERSION posts.
 
-    RESPONSE FORMAT: 
+    ### STYLE GUIDELINES (CRITICAL)
+    1. NO TEXTBOOK LANGUAGE: Never use formal, written-style language. Use the conversational, spoken dialect used by real people in that region.
+       - If Language is Tamil/Hindi/Telugu: Use "Tanglish" or "Hinglish." Mix English words for technical terms (e.g., use "Marketing" not "Santhai-paduthal", use "Growth" not "Varchi").
+    2. NO FLUFF: Do not use words like "In today's digital world" or "Let's dive in." Start immediately with value.
+    3. NO META-LABELS: In the "content" field, do not output headers like "Hook:", "Body:", or "Conclusion:". Just write the script/content directly.
+
+    ### PLATFORM SPECIFIC RULES (APPLY TO "content" FIELD)
+    **IF PLATFORM IS "Instagram Reels" or "YouTube Shorts":**
+    1. Visual Hook: (Describe what happens on screen in brackets, e.g., [Text flashes: STOP SCROLLING]).
+    2. Audio Hook: A controversial or high-energy opening sentence.
+    3. The Meat: 3 rapid-fire value points.
+    4. CTA: A quick Call to Action.
+    Structure as a vertical video script. Under 60 seconds spoken.
+
+    **IF PLATFORM IS "LinkedIn Post":**
+    1. The Hook: A one-line opening statement that creates curiosity (click-bait but professional).
+    2. The Story/Insight: Space out sentences. Use "Broetry" style (short paragraphs).
+    3. The Lesson: Bullet points of actionable advice.
+    4. The Question: End with a question to drive comments.
+    Tone: Professional but personal. No emojis in the first 2 lines.
+
+    **IF PLATFORM IS "YouTube Video" (Long Form):**
+    1. The Teaser: "In this video, you will learn X..."
+    2. The Intro: Quick branding (5 seconds).
+    3. The Content: Step-by-step deep dive.
+    4. The Conclusion: Summary and Subscribe.
+    Tone: Educational and authoritative.
+
+    ### RESPONSE FORMAT
     Return a JSON object with a "calendar" key containing an array of ${days} objects.
     {
       "day": number,
       "title": "Compelling, curiosity-gap title",
-      "content": "Professional-grade copy. Use line breaks for readability. High-impact hook.",
+      "content": "STRICTLY follow the platform rules and style guidelines here. NO META-LABELS.",
       "label": "Growth, Trust, Insight, or Vision"
     }
-
-    PLATFORM RULES:
-    - LinkedIn: Text-only, scroll-stopper hooks, whitespace for readability.
-    - YouTube: Detailed script outline (Title, Hook, 3-4 Key Points, Outro).
-    - TikTok/Instagram: Visual/Audio cues in [brackets]. Fast-paced.
-
-    Language: Everything MUST be in ${language}.
     `
 
     try {
