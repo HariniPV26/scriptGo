@@ -1,9 +1,10 @@
 'use server'
 
-import { GoogleGenerativeAI } from '@google/generative-ai'
+import OpenAI from 'openai'
 
-// Initialize Gemini
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
+const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+})
 
 export async function generateCalendarContent(
     topic: string,
@@ -14,9 +15,9 @@ export async function generateCalendarContent(
     framework: string = 'None',
     startDate?: string
 ) {
-    if (!process.env.GEMINI_API_KEY) {
-        console.error('GEMINI_API_KEY is not set in environment variables')
-        return { error: 'Gemini API Key is not configured. Please check your settings.' }
+    if (!process.env.OPENAI_API_KEY) {
+        console.error('OPENAI_API_KEY is not set in environment variables')
+        return { error: 'OpenAI API Key is not configured. Please contact support.' }
     }
 
     let frameworkInstruction = ''
@@ -76,25 +77,21 @@ export async function generateCalendarContent(
     ### RESPONSE FORMAT
     Return a JSON object with a "calendar" key containing an array of ${days} objects.
     {
-      "calendar": [
-        {
-          "day": number,
-          "title": "string",
-          "content": "string",
-          "label": "Growth | Trust | Insight | Vision"
-        }
-      ]
+      "day": number,
+      "title": "Compelling, curiosity-gap title",
+      "content": "STRICTLY follow the platform rules and style guidelines here. NO META-LABELS.",
+      "label": "Growth, Trust, Insight, or Vision"
     }
-    DO NOT include any Markdown formatting like \`\`\`json. Just the raw JSON object.
     `
 
     try {
-        const model = genAI.getGenerativeModel({
-            model: "gemini-1.5-flash",
-            generationConfig: { responseMimeType: "application/json" }
-        });
-        const result = await model.generateContent(prompt);
-        const rawContent = result.response.text() || '{}'
+        const response = await openai.chat.completions.create({
+            model: 'gpt-4o-mini',
+            messages: [{ role: 'user', content: prompt }],
+            response_format: { type: 'json_object' },
+        })
+
+        const rawContent = response.choices[0].message.content || '{}'
         const parsed = JSON.parse(rawContent)
 
         // Sometimes GPT wraps it in a key like "calendar" or "posts"
@@ -102,7 +99,17 @@ export async function generateCalendarContent(
 
         return { items }
     } catch (error: any) {
-        console.error('Gemini Calendar Error:', error)
+        console.error('OpenAI Error:', error)
+
+        // Provide more specific error messages
+        if (error?.status === 401) {
+            return { error: 'Invalid OpenAI API key. Please check your configuration.' }
+        } else if (error?.status === 429) {
+            return { error: 'Rate limit exceeded. Please try again in a moment.' }
+        } else if (error?.status === 500) {
+            return { error: 'OpenAI service is temporarily unavailable. Please try again.' }
+        }
+
         return { error: `Error generating calendar: ${error?.message || 'Unknown error'}` }
     }
 }
