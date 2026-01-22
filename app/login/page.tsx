@@ -11,6 +11,15 @@ function LoginContent() {
     const router = useRouter()
     const searchParams = useSearchParams()
     const [isLogin, setIsLogin] = useState(true)
+    const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
+
+    useEffect(() => {
+        const handleMouseMove = (e: MouseEvent) => {
+            setMousePos({ x: (e.clientX / window.innerWidth) - 0.5, y: (e.clientY / window.innerHeight) - 0.5 })
+        }
+        window.addEventListener('mousemove', handleMouseMove)
+        return () => window.removeEventListener('mousemove', handleMouseMove)
+    }, [])
 
     useEffect(() => {
         // Prefetch the dashboard for instant navigation
@@ -157,14 +166,20 @@ function LoginContent() {
         <div className="min-h-screen flex bg-[#0A0A0B] text-white font-inter overflow-hidden relative">
             {/* Mesh Gradients */}
             <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none">
-                <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-emerald-500/10 rounded-full blur-[120px]"></div>
-                <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] bg-teal-500/10 rounded-full blur-[120px]"></div>
+                <div
+                    className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-emerald-500/10 rounded-full blur-[120px] transition-transform duration-500"
+                    style={{ transform: `translate(${mousePos.x * 50}px, ${mousePos.y * 50}px)` }}
+                ></div>
+                <div
+                    className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] bg-teal-500/10 rounded-full blur-[120px] transition-transform duration-500"
+                    style={{ transform: `translate(${mousePos.x * -30}px, ${mousePos.y * -30}px)` }}
+                ></div>
             </div>
 
             {/* LEFT PANEL - BRAND & ILLUSTRATION */}
             <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-white/[0.02] border-r border-white/5 p-16 flex-col justify-between">
                 {/* Logo */}
-                <div className="relative z-10">
+                <div className="relative z-10 transition-transform duration-500" style={{ transform: `translate(${mousePos.x * 10}px, ${mousePos.y * 10}px)` }}>
                     <Link href="/" className="flex items-center gap-3 group">
                         <div className="h-10 w-10 bg-emerald-500 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/20 group-hover:scale-110 transition-transform">
                             <Rocket className="h-5 w-5 text-white" />
@@ -174,7 +189,10 @@ function LoginContent() {
                 </div>
 
                 {/* Main Content */}
-                <div className="relative z-10 space-y-10 max-w-lg">
+                <div
+                    className="relative z-10 space-y-10 max-w-lg transition-transform duration-500"
+                    style={{ transform: `translate(${mousePos.x * 20}px, ${mousePos.y * 20}px)` }}
+                >
                     <div className="space-y-6">
                         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
                             <Sparkles className="h-3 w-3 text-emerald-400" />
@@ -218,7 +236,10 @@ function LoginContent() {
 
             {/* RIGHT PANEL - AUTH FORM */}
             <div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12">
-                <div className="w-full max-w-md space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-700">
+                <div
+                    className="w-full max-w-md space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-700 transition-transform duration-500"
+                    style={{ transform: `translate(${mousePos.x * -10}px, ${mousePos.y * -10}px)` }}
+                >
 
                     {/* Mobile Logo */}
                     <div className="lg:hidden flex justify-center mb-8">
@@ -231,9 +252,12 @@ function LoginContent() {
                     </div>
 
                     {/* Auth Card */}
-                    <div className="bg-white/[0.03] backdrop-blur-2xl px-1 rounded-[2.5rem] border border-white/5 relative overflow-hidden">
+                    <div className="bg-white/[0.03] backdrop-blur-2xl px-1 rounded-[2.5rem] border border-white/5 relative overflow-hidden transition-all duration-500 group">
                         {/* Internal Glow */}
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full blur-3xl -z-10"></div>
+                        <div
+                            className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full blur-3xl -z-10 transition-transform duration-500"
+                            style={{ transform: `translate(${mousePos.x * 60}px, ${mousePos.y * 60}px)` }}
+                        ></div>
 
                         <div className="p-8 sm:p-12 space-y-10">
                             {/* Tab Switcher */}
